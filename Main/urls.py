@@ -8,8 +8,6 @@ from rest_framework import routers
 from App import views
 from App.views import *
 from django.conf.urls import url
-from App import urls
-
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -25,6 +23,7 @@ urlpatterns = [
     path('ques-view/', QuestionList.as_view()),
     path('ques-detail/<int:pk>/', QuestionDetail.as_view()),
 	path('question-create/', index_create, name='question-create'),
-	path('index_view/', index_view, name='index_view')
-
+	path('index_view/', index_view, name='index_view'),
+	path('python_view/', python_view, name='python_view'),
+	path('jquery_view/', jquery_view, name='jquery_view'),
 ]

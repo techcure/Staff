@@ -5,8 +5,8 @@ from rest_framework import routers
 from .views import *
 
 from django.conf.urls import url
+app_name = 'App'
 
 urlpatterns = [
-
 
 ]

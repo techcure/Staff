@@ -1,54 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title></title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <style>
-    .row.content {height: 1500px}
-    .sidenav {
-      background-color: #f1f1f1;
-      height: 100%;
-    }
-    footer {
-      background-color: #555;
-      color: white;
-      padding: 15px;
-    }
-    @media screen and (max-width: 767px) {
-      .sidenav {
-        height: auto;
-        padding: 15px;
-      }
-      .row.content {height: auto;} 
-    }
-  </style>
-</head>
+
 <body>
-<div class="container-fluid">
-<div class="row content">
-<div class="col-sm-3 sidenav">
-<h4>Dashboard</h4>
-<ul class="nav nav-pills nav-stacked">
-<li class="active"><a href="#section1">Home</a></li>
-<li><a href="#section2">Python</a></li>
-<li><a href="#section3">JQuery</a></li>
-<li><a href="#section3">HTML</a></li>
-</ul><br>
-<div class="input-group">
-<input type="text" class="form-control" placeholder="Search Blog..">
-<span class="input-group-btn">
-<button class="btn btn-default" type="button">
-<span class="glyphicon glyphicon-search"></span>
-</button>
-</span>
-</div>
-</div>
-<div class="col-sm-9">
-<h4><small>RECENT </small></h4>
     
 {% extends 'base.html' %}
 
@@ -61,7 +12,6 @@
             <div class="form-group">  
             <input type="text" class="form-control" id="question" placeholder="Add your questions" name="question">
             </div>
-
             <div class="select_class">
             <select class="form-control" name="subj" required>  
             <option value="Python" id="Python">Python</option>  
@@ -109,7 +59,6 @@ $('#submitButton').click(function(){
 </script>
 
 {% endblock %}
-
 {% endblock %}
       
 <br><br>
@@ -117,7 +66,7 @@ $('#submitButton').click(function(){
 </div>
 </div>
 </div>
-</div>
+</div>  
 <footer class="container-fluid">
 <p>Footer Text</p>
 </footer>

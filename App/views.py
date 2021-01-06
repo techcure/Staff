@@ -24,33 +24,30 @@ from django.views import View
 def index_create(request):
     return render(request, 'question-create.html', {})
 
-
 def index_view(request):
 
-    Que = Question.objects.all()
-    response_data = {}
-
     if request.method == 'POST':
-        question = request.POST['question']
-        subj = request.POST['subj']
-        answer = request.POST['answer']
-        quetype = request.POST['quetype']
+        serializer = QuestionSerializer(data=request.POST)
+        # import pdb;pdb.set_trace()
+        if serializer.is_valid():
+            serializer.save()
 
-        response_data['question'] = question
-        response_data['subj'] = subj
-        response_data['answer'] = answer
-        response_data['quetype'] = quetype
-
-        Question.objects.create(
-            question = question,
-            subj = subj,
-            answer = answer,
-            quetype = quetype,
-            )
         return JsonResponse(response_data)
 
         return HttpResponse('Data is saved')
     return render(request, 'question-create.html', {})
+
+def python_view(request):
+
+    print("okay")
+
+    queryset = Question.objects.filter(subj = 'Python')
+    return render(request, 'python.html', {'queryset':queryset})
+
+def jquery_view(request):
+
+    queryset = Question.objects.filter(subj = 'JQuery')
+    return render(request, 'JQuery.html', {'queryset':queryset})
 
 class UserViewSet(viewsets.ModelViewSet):
 
@@ -78,7 +75,6 @@ class StudViewSet(viewsets.ModelViewSet):
 def getdata(request):
     return JsonResponse({"name": "Oppppp"})
 
-
 @api_view(['GET', 'POST'])
 def hello_world(request):
     if request.method == 'POST':
@@ -105,7 +101,6 @@ class QuestionList(APIView):
                 print(serializer)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class QuestionDetail(APIView):
 

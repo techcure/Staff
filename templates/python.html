@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+<body>
+{% block content %}
+
+Python
+
+{% for x in queryset %}
+<div class="container">
+  <div class="alert alert-info">
+    <strong>
+    {{x.question}}
+    </strong> 
+    <br> 
+    <strong>Answer : </strong>
+    {{x.answer}}
+    <h5><span class="label label-success">{{x.quetype}}</span></h5><br>
+  </div>
+{% endfor %}
+
+{% endblock %}
+
+</body>
+</html>
