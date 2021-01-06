@@ -1,5 +1,4 @@
-# DRF_Example
-This is a Django RESTful API app example to understand how the API or DRF (Django RESTful API works.
+# Staffing Solutions
 
 # How to run the project
 Go to the terminal and run the following commands :
