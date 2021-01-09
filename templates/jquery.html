@@ -4,9 +4,8 @@
 <body>
 {% block content %}
 <div class="container">
-  <h4>Python</h4>
-            
-  <table class="table table-hover">
+<h4>JQuery</h4>            
+  <table class="table table-bordered table-hover">
     <thead>
       <tr>
         <th>Question</th>
@@ -14,18 +13,16 @@
         <th>Subj</th>
         <th>Points</th>
         <th>Quetype</th>
-        <th></th>
-
       </tr>
     </thead>
-	 <tbody id="tableData"></tbody>
+     <tbody id="tableData"></tbody>
   </table>
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
 
     $.ajax({
-        url: '{% url "App:python_view" %}',
+        url: '{% url "App:jquery_view" %}',
         datatype: 'json',
         type: 'GET',
         success: function (data) {
@@ -44,26 +41,16 @@ function tableFromResponse(data) {
         for(i = 0;i < mainObj.length; i++){
 
             k+= '<tr>';
-            k+= '<td  width="20%">' + mainObj[i].question+ '</td>';
+            k+= '<td  width="20%">' + mainObj[i].question + '</td>';
             k+= '<td>' + mainObj[i].answer + '</td>';
             k+= '<td>' + mainObj[i].subj + '</td>';
             k+= '<td>' + mainObj[i].point + '</td>';
             k+= '<td>' + mainObj[i].quetype + '</td>';
-            k+= '<td>' + '<button class = "btn btn-secondary" type="button" id = "delButton"> Delete</button>' + '</td>';
-
             k+= '</tr>';
         }
         k+='</tbody>';
         document.getElementById('tableData').innerHTML = k;
 }
-
-$("#delButton").onclick(function(){
-
-    console.log("okay")
-
-});
-
-
 
 </script>
 {% endblock %}

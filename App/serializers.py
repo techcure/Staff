@@ -5,6 +5,13 @@ from django.conf import settings
 from rest_framework.test import APIRequestFactory
 from rest_framework.request import Request
 
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.db import transaction
+from django.forms.utils import ValidationError
+
+from .models import (User)
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -24,7 +31,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     def get_ques(self, obj):
         queryset = Question.objects.filter(owner=obj)
-        Question = CitySerializer(queryset, many=True, context=self.context).data
+        Question = QuestionSerializer(queryset, many=True, context=self.context).data
         return Question
 
     def update(self, instance, validated_data):
@@ -35,7 +42,9 @@ class QuestionSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
+        print(validated_data)
         return Question.objects.create(**validated_data)
+
 
 class StudSerializer(serializers.ModelSerializer):
     class Meta:

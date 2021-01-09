@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br>
+Select User : 
+<br>
+<br>
+<div class="col-sm-3">
+{% for c in uset1 %}
+<a href="#" class="list-group-item" onclick="openForm()" id="dd">{{c.name}}</a>
+{% endfor %}
+</div>
+
+
+<form action="" method="POST">
+
+
+
+
+</form>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+  $("#dd").toggle(
+    function(){$("fade").css({"color": "red"});},
+
+  });
+</script>
+
+
+{% endblock %}

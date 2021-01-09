@@ -15,8 +15,8 @@
             <option value="JQuery" id="JQuery">JQuery</option>
             <option value="HTML" id="HTML">HTML</option>
             </select>
-            <br>
             </div>
+            <br>
             <div class="form-group">  
             <input type="text" class="form-control" id="question" placeholder="Add your questions" name="question">
             </div>
@@ -43,25 +43,23 @@
 </body>
 {% block javascript %}
 <script type="text/javascript">
-
 $(document).ready(function(){
 
+  var csrftoken = $("[name=csrfmiddlewaretoken]").val();  
+  var question = $('#question').val()
+  var subj = $('select[name="subj"]').val()
+  var quetype = $('select[name="quetype"]').val()
+  var answer = $('#answer').val()
+  var point = $('#point').val()
 
 console.log("okay")
 
   $('#submitButton').click(function(){
-    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-    var question = $('#question').val()
-    var subj = $('select[name="subj"]').val()
-    var quetype = $('select[name="quetype"]').val()
-    var answer = $('#answer').val()
-    var point = $('#point').val()
-    data = {}
     $.ajax({
         type: 'POST',
         url: '{% url "home1" %}',
-        dataType:'json',
-        data: {'question':question, 'subj':subj, 'answer':answer, 'quetype':quetype,  'point':point},
+        dataType:'json'
+        data: {'question':question, 'subj':subj, 'answer':answer, 'quetype':quetype, 'point':point},
         headers:{"X-CSRFToken": csrftoken},
         success: function(data, textStatus, jqXHR) {
           $('#output').html(data);
@@ -70,6 +68,7 @@ console.log("okay")
       });
   });
 });
+
 
 </script>
 

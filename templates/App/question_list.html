@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<ul>
+{% for x in object_list %}
+<li>
+{{x.question}}
+</li>
+{% endfor %}
+</ul>
+{% endblock %}
