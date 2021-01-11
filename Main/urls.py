@@ -3,7 +3,6 @@ from django.contrib import admin
 
 from django.conf import settings
 
-
 from django.urls import include, path
 from rest_framework import routers
 from App import views
@@ -31,5 +30,4 @@ urlpatterns = [
     url(r'^',include('App.urls',namespace='App')),
     path('ques-view/', QuestionList.as_view()),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
 ]

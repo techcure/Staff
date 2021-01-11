@@ -14,7 +14,6 @@ from rest_framework import viewsets
 from rest_framework import status
 import json
 
-
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
@@ -54,16 +53,29 @@ def Home1(request, format=None, *args, **kwargs):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return render(request, 'question-create.html')
 
-class DisplayJquery(TemplateView):
-    template_name = "jquery.html"
 
-    queryset = Question.objects.filter(subj='JQuery').values()
-    serializer_class = QuestionSerializer
+@api_view(['GET', 'PUT', 'DELETE'])
+def question_detele(request, pk):
+
+    try:
+        question = Question.objects.get(pk=pk)
+    except Question.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        question.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DisplayPython(TemplateView):
     template_name = "python.html"
 
     queryset = Question.objects.filter(subj='Python').values()
+    serializer_class = QuestionSerializer
+
+class DisplayJquery(TemplateView):
+    template_name = "jquery.html"
+
+    queryset = Question.objects.filter(subj='JQuery').values()
     serializer_class = QuestionSerializer
 
 
@@ -165,6 +177,11 @@ class PythonViewSet(viewsets.ModelViewSet):
             return Response({'data': response.data})
 
         return response
+
+    def delete(self, request, pk, format=None, *args, **kwargs):
+        que_obj = self.get_object(pk)
+        que_obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 """

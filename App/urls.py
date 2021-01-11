@@ -3,6 +3,7 @@
 from django.urls import include, path
 from rest_framework import routers
 from .views import *
+from rest_framework.urlpatterns import format_suffix_patterns
 
 from django.conf.urls import url
 app_name = 'App'
@@ -21,4 +22,8 @@ urlpatterns = [
     path('display-python/', DisplayPython.as_view(), name='display-python'),
     path('display-jquery/', DisplayJquery.as_view(), name='display-jquery'),
     path('display-html/', DisplayHTML.as_view(), name='display-html'),
+    url(r'^question_detele/(?P<pk>[0-9]+)/$', question_detele, name='question_detele'),
+
 ]
+
+format_suffix_patterns(urlpatterns)
