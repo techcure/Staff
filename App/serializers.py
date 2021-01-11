@@ -36,7 +36,10 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.question = validated_data.get('question',instance.question)
+        instance.answer = validated_data.get('answer',instance.answer)
         instance.subj = validated_data.get('subj',instance.subj)
+        instance.quetype = validated_data.get('quetype',instance.quetype)
+        instance.point = validated_data.get('point',instance.point)
 
         instance.save()
         return instance

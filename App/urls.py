@@ -22,7 +22,8 @@ urlpatterns = [
     path('display-python/', DisplayPython.as_view(), name='display-python'),
     path('display-jquery/', DisplayJquery.as_view(), name='display-jquery'),
     path('display-html/', DisplayHTML.as_view(), name='display-html'),
-    path('question_detele/<int:pk>/', question_detele, name='question_detele'),
+    path('question_op/<int:pk>/', question_op, name='question_op'),
+    path('question_put/<int:pk>/', question_put, name='question_put'),
 
 ]
 

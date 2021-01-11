@@ -55,8 +55,7 @@ def Home1(request, format=None, *args, **kwargs):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def question_detele(request, pk):
-    # import pdb;pdb.set_trace()
+def question_op(request, pk):
     try:
         question = Question.objects.get(id=pk)
     except Question.DoesNotExist:
@@ -64,6 +63,18 @@ def question_detele(request, pk):
     if request.method == 'DELETE':
         question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def question_put(request, pk, ormat=None, *args, **kwargs):
+    if request.method == 'PUT':
+        # import pdb;pdb.set_trace()
+        question = Question.objects.get(id=pk)
+        serializer = QuestionSerializer(question, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            print(serializer)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DisplayPython(TemplateView):
