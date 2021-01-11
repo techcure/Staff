@@ -56,15 +56,15 @@ def Home1(request, format=None, *args, **kwargs):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def question_detele(request, pk):
-
+    # import pdb;pdb.set_trace()
     try:
-        question = Question.objects.get(pk=pk)
+        question = Question.objects.get(id=pk)
     except Question.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     if request.method == 'DELETE':
         question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class DisplayPython(TemplateView):
     template_name = "python.html"

@@ -22,7 +22,7 @@ urlpatterns = [
     path('display-python/', DisplayPython.as_view(), name='display-python'),
     path('display-jquery/', DisplayJquery.as_view(), name='display-jquery'),
     path('display-html/', DisplayHTML.as_view(), name='display-html'),
-    url(r'^question_detele/(?P<pk>[0-9]+)/$', question_detele, name='question_detele'),
+    path('question_detele/<int:pk>/', question_detele, name='question_detele'),
 
 ]
 

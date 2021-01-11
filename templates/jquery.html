@@ -4,20 +4,74 @@
 <body>
 {% block content %}
 <div class="container">
-<h4>JQuery</h4>            
-  <table class="table table-bordered table-hover">
+  <h4>JQuery</h4>
+            
+  <table class="table table-hover" id="qTable">
     <thead>
       <tr>
+        <th>Id</th>
         <th>Question</th>
         <th>Answer</th>
         <th>Subj</th>
         <th>Points</th>
         <th>Quetype</th>
+        <th></th>
+
       </tr>
     </thead>
      <tbody id="tableData"></tbody>
   </table>
 </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog" data-row_id="result">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+        <form id="myform" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="select_class">
+            <select class="form-control" id="subj" name="subj" required>
+            <option value="Python" id="Python">Python</option>
+            <option value="JQuery" id="JQuery">JQuery</option>
+            <option value="HTML" id="HTML">HTML</option>
+            </select>
+            <br>
+            </div>
+            <div class="form-group">  
+            <input type="text" class="form-control" id="question" placeholder="Add your questions" name="question">
+            </div>
+            <br>
+            <div class="form-group">
+            <textarea class="form-control" rows="5" id="answer" placeholder="Answer" name="answer"></textarea>
+            </div>
+            <div class="select_class">
+            <select class="form-control" id="quetype" name="quetype" required>
+            <option value="Easy" id="Easy">Easy</option>
+            <option value="Medium" id="Medium">Medium</option>
+            <option value="Hard" id="Hard">Hard</option>
+            </select>
+            </div>
+            <br>
+            <input type="number" class="form-control" id="point" name="point" placeholder="Assign points">
+            <br>
+            <p id="saveButton" style="border:solid black 2px; background: grey" class="btn btn-secondary"> Save Changes</p>
+        </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -33,23 +87,62 @@ $(document).ready(function() {
 });
 
 function tableFromResponse(data) {
+        var count = $('#tableData').find('tr').length+1
 
         var mainObj = data.results
 
-        var k = '<tbody>'
+        var k = '<tbody id = "tableData">'
+
+        var id =mainObj[0].id
 
         for(i = 0;i < mainObj.length; i++){
 
-            k+= '<tr>';
+            k+= '<tr id = "trid_'+ count +'" >';
+            k+= '<td id = "">' + mainObj[i].id + '</td>';
             k+= '<td  width="20%">' + mainObj[i].question + '</td>';
-            k+= '<td>' + mainObj[i].answer + '</td>';
-            k+= '<td>' + mainObj[i].subj + '</td>';
-            k+= '<td>' + mainObj[i].point + '</td>';
-            k+= '<td>' + mainObj[i].quetype + '</td>';
+            k+= '<td id = >' + mainObj[i].answer + '</td>';
+            k+= '<td id = >' + mainObj[i].subj + '</td>';
+            k+= '<td id = >' + mainObj[i].point + '</td>';
+            k+= '<td id = >' + mainObj[i].quetype + '</td>';
+            k+= '<td>' + '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "delButton.call(this)"> Delete</button>' + '</td>';
+            k+= '<td>' + '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "upButton.call(this)" data-toggle="modal" data-target="#myModal">Update</button>' + '</td>';
             k+= '</tr>';
-        }
+            }
         k+='</tbody>';
         document.getElementById('tableData').innerHTML = k;
+}
+
+
+function delButton() {
+
+    var action = confirm("Are you sure you want to delete this?");
+
+    var id = $(this).attr('data-id');
+      if (action != false) {
+        $.ajax({
+            type: 'DELETE',
+            url: '/question_detele/' + id +"/",
+            // dataType: 'json',
+            success: function (data) {
+                alert("Deleted")
+                location.reload()
+                if (data.deleted) {
+                  $("#qTable #tableData-" + id).remove();
+                }
+            }
+        });
+      }
+    }
+
+function upButton(){
+
+    console.log("okay")
+    console.log("okay")
+    var id = $(this).attr('data-id');
+    var idd = this.parentElement.parentElement.id;
+    $('#myModal').attr('data-row_id', id);
+
+
 }
 
 </script>
