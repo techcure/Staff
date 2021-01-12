@@ -3,10 +3,11 @@ from .models import *
 
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import api_view
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions
@@ -108,7 +109,7 @@ class UpdateQuestion(UpdateView):
 
 class IndexViewSet(viewsets.ModelViewSet):
 
-    queryset = Question.objects.filter(subj = 'Python')
+    queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
     def get(self, request, format=None, *args, **kwargs):
@@ -194,6 +195,15 @@ class PythonViewSet(viewsets.ModelViewSet):
         que_obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def post(self, request, format=None, *args, **kwargs):
+        if request.method == 'POST':
+            serializer = QuestionSerializer(data=request.data)
+            # import pdb;pdb.set_trace()
+            if serializer.is_valid():
+                serializer.save()
+                print(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 """
 End Python Viewset 
@@ -215,6 +225,15 @@ class JQueryViewSet(viewsets.ModelViewSet):
 
         return response
 
+    def post(self, request, format=None, *args, **kwargs):
+        if request.method == 'POST':
+            serializer = QuestionSerializer(data=request.data)
+            # import pdb;pdb.set_trace()
+            if serializer.is_valid():
+                serializer.save()
+                print(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 """
 End JQuery Viewset 
 """
@@ -243,6 +262,15 @@ class HTMLViewSet(viewsets.ModelViewSet):
 
         return response
 
+    def post(self, request, format=None, *args, **kwargs):
+        if request.method == 'POST':
+            serializer = QuestionSerializer(data=request.data)
+            # import pdb;pdb.set_trace()
+            if serializer.is_valid():
+                serializer.save()
+                print(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 """
 End HTML Viewset 
 """

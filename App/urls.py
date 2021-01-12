@@ -10,7 +10,7 @@ app_name = 'App'
 
 urlpatterns = [
     path('ques-detail/<int:pk>/', QuestionDetail.as_view()),
-    path('question-create/', IndexViewSet.as_view({'get': 'list'}), name='question-create'),
+    path('index-viewset/', IndexViewSet.as_view({'get': 'list'}), name='index-viewset'),
     path('python_view/', PythonViewSet.as_view({'get': 'list'}), name = 'python_view'),
     path('jquery_view/', JQueryViewSet.as_view({'get': 'list'}), name='jquery_view'),
     path('stud_view/', StudentViewSet.as_view({'get': 'list'}), name='stud_view'),
