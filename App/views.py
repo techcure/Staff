@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from .models import *
+from .pagination import *
 
 from django.shortcuts import get_object_or_404
 from django.http import Http404
@@ -33,7 +34,6 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
 from rest_framework import generics
 from django.urls import reverse_lazy
-
 
 
 # 1) click on python show one blank html page where page name is python_questions.htnl
@@ -77,6 +77,12 @@ def question_put(request, pk, ormat=None, *args, **kwargs):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class DisplayStudents(TemplateView):
+    template_name = "test_view.html"
+
+    queryset = Stud.objects.all().values()
+    serializer_class = StudSerializer
 
 class DisplayPython(TemplateView):
     template_name = "python.html"

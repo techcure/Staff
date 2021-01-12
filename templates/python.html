@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container">
   <h4>Python</h4>
-            
+<a href="{% url 'home1' %}" class="btn btn-info" role="button">Add New question</a><br><br><br>
   <table class="table table-hover" id="qTable">
     <thead>
       <tr>
@@ -73,6 +73,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
 
+    console.log("Working...")
+
     $.ajax({
         url: '{% url "App:python_view" %}',
         datatype: 'json',
@@ -98,10 +100,10 @@ function tableFromResponse(data) {
             k+= '<tr id = "trid_'+ mainObj[i].id +'" data-question= "'+ mainObj[i].question + '" data-answer= "'+ mainObj[i].answer + '" data-subj= "'+ mainObj[i].subj + '" data-point= "'+ mainObj[i].point + '" data-quetype= "'+ mainObj[i].quetype + '" >';
             k+= '<td id = "">' + mainObj[i].id + '</td>';
             k+= '<td  width="20%" >' + mainObj[i].question + '</td>';
-            k+= '<td id = >' + mainObj[i].answer + '</td>';
-            k+= '<td id = >' + mainObj[i].subj + '</td>';
-            k+= '<td id = >' + mainObj[i].point + '</td>';
-            k+= '<td id = >' + mainObj[i].quetype + '</td>';
+            k+= '<td >' + mainObj[i].answer + '</td>';
+            k+= '<td >' + mainObj[i].subj + '</td>';
+            k+= '<td >' + mainObj[i].point + '</td>';
+            k+= '<td >' + mainObj[i].quetype + '</td>';
             k+= '<td>' + '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "delButton.call(this)"> Delete</button>' + '</td>';
             k+= '<td>' + '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "upButton.call(this)" data-toggle="modal" data-target="#myModal">Update</button>' + '</td>';
             k+= '</tr>';

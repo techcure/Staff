@@ -2,31 +2,37 @@
 
 {% block content %}
 
-<br>
-Select User : 
-<br>
-<br>
-<div class="col-sm-3">
-{% for c in uset1 %}
-<a href="#" class="list-group-item" onclick="openForm()" id="dd">{{c.name}}</a>
-{% endfor %}
-</div>
 
 
 <form action="" method="POST">
 
+<h2>Working.....! </h2>
 
-
+<p id="responsecontainer"></p>
 
 </form>
 
 <script type="text/javascript">
+console.log("working...")
+$(document).ready(function() {
+    $.ajax({
+        type: 'GET',
+        url: '{% url "App:take-test" %}',
+        datatype: 'json',
+        success: function (data) {
+            /*alert("Got data!")*/
+            getStudent(data);
+        }
+    });
+});
 
-$(document).ready(function(){
-  $("#dd").toggle(
-    function(){$("fade").css({"color": "red"});},
+function getStudent(data){
 
-  });
+var student = data.results
+	$("#responsecontainer").val(data)
+
+}
+
 </script>
 
 
