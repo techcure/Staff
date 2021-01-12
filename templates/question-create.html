@@ -1,5 +1,7 @@
 
 {% extends 'base.html' %}
+{% load static %}
+
 <body>
 {% block content %}
 
@@ -46,7 +48,7 @@
 
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
-  console.log("okay")
+  console.log("main page is working")
 
   $('#submitButton').click(function(){
       var csrftoken = $("[name=csrfmiddlewaretoken]").val();
