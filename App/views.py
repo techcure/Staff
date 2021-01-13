@@ -6,8 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.exceptions import APIException
-from rest_framework.exceptions import NotFound  
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import api_view
@@ -47,13 +46,14 @@ from django.urls import reverse_lazy
 
 @api_view(["POST", "GET"])
 def Home1(request, format=None, *args, **kwargs):
+
     if request.method == 'POST':
         print("okay")
         serializer = QuestionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
         else:
-            print(serializer.errors)
+            # print(serializer.errors)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return render(request, 'question-create.html')
@@ -72,21 +72,44 @@ def question_op(request, pk):
 @api_view(['GET', 'PUT', 'DELETE'])
 def question_put(request, pk, ormat=None, *args, **kwargs):
     if request.method == 'PUT':
-        # import pdb;pdb.set_trace()
         question = Question.objects.get(id=pk)
         serializer = QuestionSerializer(question, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            print(serializer)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DisplayStudents(TemplateView):
     template_name = "test_view.html"
-
+    import pdb
     queryset = Stud.objects.all().values()
     serializer_class = StudSerializer
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def stu_detail(request, *pk, **kwargs):
+
+    try:
+        snippet = Stud.objects.all()
+    except Stud.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        stdq = Stud.objects.all()
+        serializer = StudSerializer(stdq, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        print("okay")
+        serializer = StudSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print(serializer.errors)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return render(request, 'test_view.html')
+
 
 class DisplayPython(TemplateView):
     template_name = "python.html"
@@ -122,10 +145,24 @@ class IndexViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
+    pagination_class = LargeResultsSetPagination
+    pagination_class = StandardResultsSetPagination
+
     def get(self, request, format=None, *args, **kwargs):
+
+        numbers_list = range(1, 1000)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(numbers_list, 20)
         que_obj = QuestionSerializer.objects.filter(subj='Python')
 
         serializer = QuestionSerializer(que_obj)
+
+        try:
+            numbers = paginator.page(page)
+        except PageNotAnInteger:
+            numbers = paginator.page(1)
+        except EmptyPage:
+            numbers = paginator.page(paginator.num_pages)
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -156,6 +193,9 @@ class StudentViewSet(viewsets.ModelViewSet):
     queryset = Stud.objects.all()
     serializer_class = StudSerializer
 
+    pagination_class = LargeResultsSetPagination
+    pagination_class = StandardResultsSetPagination    
+
     def list(self, request, *args, **kwargs):
         response = super(StudentViewSet, self).list(request, *args, **kwargs)
         if request.accepted_renderer.format == 'html':
@@ -183,7 +223,24 @@ class PythonViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.filter(subj = 'Python')
     serializer_class = QuestionSerializer
 
+    pagination_class = LargeResultsSetPagination
+    pagination_class = StandardResultsSetPagination
+
     def get(self, request, *args, **kwargs):
+        numbers_list = range(1, 1000)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(numbers_list, 20)
+        que_obj = QuestionSerializer.objects.filter(subj='Python')
+
+        serializer = QuestionSerializer(que_obj)
+
+        try:
+            numbers = paginator.page(page)
+        except PageNotAnInteger:
+            numbers = paginator.page(1)
+        except EmptyPage:
+            numbers = paginator.page(paginator.num_pages)
+        return Response(serializer.data)
 
         queryset = Question.objects.filter(subj = 'Python')
         return Response({'data': response.data})
@@ -230,6 +287,9 @@ class JQueryViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.filter(subj = 'JQuery')
     serializer_class = QuestionSerializer
 
+    pagination_class = LargeResultsSetPagination
+    pagination_class = StandardResultsSetPagination
+
     def list(self, request, *args, **kwargs):
         response = super(JQueryViewSet, self).list(request, *args, **kwargs)
 
@@ -256,6 +316,9 @@ HTML ViewSet
 class HTMLViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.filter(subj = 'HTML')
     serializer_class = QuestionSerializer
+
+    pagination_class = LargeResultsSetPagination
+    pagination_class = StandardResultsSetPagination
 
     def get(self, request, *args, **kwargs):
 

@@ -53,3 +53,18 @@ class StudSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stud
         fields = '__all__'
+
+    def get(self, *obj):
+        queryset = Stud.objects.all()
+        std = StudSerializer(queryset, many=True, context=self.context).data
+        return Question
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name',instance.name)
+        instance.save()
+        return instance
+
+    def create(self, validated_data):
+        print(validated_data)
+        return Stud.objects.create(**validated_data)
+

@@ -11,24 +11,32 @@
 
 </form>
 
+
+<div class="col-sm-4">
+<select class="form-control" id="sname" name="sname">
+<option value="name" id="name">Name</option>
+
+</select>
+</div>
+
 <script type="text/javascript">
 console.log("working...")
 $(document).ready(function() {
     $.ajax({
-        type: 'GET',
-        url: '{% url "App:take-test" %}',
+        url: '{% url "App:stu_detail" %}',
         datatype: 'json',
+        type: 'GET',
         success: function (data) {
-            /*alert("Got data!")*/
+            alert("Got data!")
             getStudent(data);
         }
     });
 });
 
 function getStudent(data){
+    var name = data;
 
-var student = data.results
-	$("#responsecontainer").val(data)
+    $('select[name="sname"]').val(name[0].name)
 
 }
 

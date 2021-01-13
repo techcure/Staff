@@ -59,7 +59,6 @@ console.log("okay")
         url: '{% url "home1" %}',
         dataType:'json'
         data: {'question':question, 'subj':subj, 'answer':answer, 'quetype':quetype, 'point':point},
-        headers:{"X-CSRFToken": csrftoken},
         success: function(data, textStatus, jqXHR) {
           $('#output').html(data);
           alert("success");

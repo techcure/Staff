@@ -25,6 +25,7 @@ urlpatterns = [
     path('question_op/<int:pk>/', question_op, name='question_op'),
     path('question_put/<int:pk>/', question_put, name='question_put'),
     path('take-test/', DisplayStudents.as_view(), name='take-test'),
+    path('stu_detail/', stu_detail, name='stu_detail'),
 ]
 
 format_suffix_patterns(urlpatterns)
