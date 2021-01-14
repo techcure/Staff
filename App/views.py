@@ -150,7 +150,7 @@ class IndexViewSet(viewsets.ModelViewSet):
 
     def get(self, request, format=None, *args, **kwargs):
 
-        numbers_list = range(1, 1000)
+        numbers_list = range(1, 20)
         page = request.GET.get('page', 1)
         paginator = Paginator(numbers_list, 20)
         que_obj = QuestionSerializer.objects.filter(subj='Python')
@@ -290,10 +290,41 @@ class JQueryViewSet(viewsets.ModelViewSet):
     pagination_class = LargeResultsSetPagination
     pagination_class = StandardResultsSetPagination
 
+    def get(self, request, *args, **kwargs):
+        numbers_list = range(1, 1000)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(numbers_list, 20)
+        que_obj = QuestionSerializer.objects.filter(subj='JQuery')
+
+        serializer = QuestionSerializer(que_obj)
+
+        try:
+            numbers = paginator.page(page)
+        except PageNotAnInteger:
+            numbers = paginator.page(1)
+        except EmptyPage:
+            numbers = paginator.page(paginator.num_pages)
+        return Response(serializer.data)
+
+        queryset = Question.objects.filter(subj = 'JQuery')
+        return Response({'data': response.data})
+
+        context = {'queryset': queryset,}
+
+        html = render_to_string(template_name, context)
+        return HttpResponse(html)
+
     def list(self, request, *args, **kwargs):
         response = super(JQueryViewSet, self).list(request, *args, **kwargs)
+        if request.accepted_renderer.format == 'html':
+            return Response({'data': response.data})
 
         return response
+
+    def delete(self, request, pk, format=None, *args, **kwargs):
+        que_obj = self.get_object(pk)
+        que_obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def post(self, request, format=None, *args, **kwargs):
         if request.method == 'POST':
@@ -321,6 +352,20 @@ class HTMLViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
 
     def get(self, request, *args, **kwargs):
+        numbers_list = range(1, 1000)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(numbers_list, 20)
+        que_obj = QuestionSerializer.objects.filter(subj='HTML')
+
+        serializer = QuestionSerializer(que_obj)
+
+        try:
+            numbers = paginator.page(page)
+        except PageNotAnInteger:
+            numbers = paginator.page(1)
+        except EmptyPage:
+            numbers = paginator.page(paginator.num_pages)
+        return Response(serializer.data)
 
         queryset = Question.objects.filter(subj = 'HTML')
         return Response({'data': response.data})
@@ -332,8 +377,15 @@ class HTMLViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         response = super(HTMLViewSet, self).list(request, *args, **kwargs)
+        if request.accepted_renderer.format == 'html':
+            return Response({'data': response.data})
 
         return response
+
+    def delete(self, request, pk, format=None, *args, **kwargs):
+        que_obj = self.get_object(pk)
+        que_obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def post(self, request, format=None, *args, **kwargs):
         if request.method == 'POST':

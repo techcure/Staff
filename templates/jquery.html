@@ -6,10 +6,11 @@
 {% block content %}
 <div class="container">
   <h4>JQuery</h4>
-    <a href="{% url 'home1' %}" class="btn btn-info" role="button">Add New question</a><br><br><br>
-  <table class="table table-hover" id="qTable">
+<a href="{% url 'home1' %}" class="btn btn-info" role="button">Add New question</a><br><br><br>
+  <div id="qTable" style="width:1200px; height:500px; overflow:auto;">
+  <table class="table table-hover" id="qTable" cellspacing="0" cellpadding="1" width="300">
     <thead>
-      <tr>
+      <tr data-page = "pagenum">
         <th>Id</th>
         <th>Question</th>
         <th>Answer</th>
@@ -17,17 +18,16 @@
         <th>Points</th>
         <th>Quetype</th>
         <th></th>
-
       </tr>
     </thead>
-     <tbody id="tableData"></tbody>
+     <tbody id="tableData" data-page="page"></tbody>
   </table>
+</div>
 </div>
 
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog" data-row_id="result">
     <div class="modal-dialog">
-    
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
@@ -39,7 +39,7 @@
             {% csrf_token %}
             <div class="select_class">
             <select class="form-control" id="subj" name="subj" required>
-            <option value="JQuery" id="JQuery">JQuery</option>
+            <option value="Python" id="Python">Python</option>
             </select>
             <br>
             </div>
@@ -60,7 +60,7 @@
             <br>
             <input type="number" class="form-control" id="point" name="point" placeholder="Assign points">
             <br>
-            <p id="saveButton" style="border:solid black 2px; background: grey" class="btn btn-secondary" data-toggle="modal" data-target="#myModal" onclick="saveChange.call(this)"> Save Changes</p>
+            <p id="saveButton" style="border:solid black 2px; background: grey" class="btn btn-secondary" onclick="saveChange.call(this)" data-toggle="modal" data-target="#myModal"> Save Changes</p>
         </form>
         </div>
         <div class="modal-footer">
@@ -70,12 +70,61 @@
       
     </div>
   </div>
-
 <script type="text/javascript">
-$(document).ready(function() {
 
+    $(document).ready(function(data) {
+
+        $( "#qTable" ).scroll(function() {
+        var newpage = $("#qTable tbody").attr("data-page");
+        console.log("scroll called successfully")
+
+        if(newpage != "None") {
+            $.ajax({
+                url: '/jquery_view/' + newpage,
+                datatype: 'json',
+                type: 'GET',
+                success: function (data) {
+                    /*alert("Got data!")*/
+                    report(data);
+                }
+            });
+            }
+        });
+    });
+
+function report(data){
+
+    var mainObj = data.results
+    var nextpage = data.next
+
+    if(nextpage == null){
+        var pagenum  = "None"
+    }
+    else{
+
+        var pagenum = nextpage.split("/")[4]
+    }
+    $("#qTable tbody").attr("data-page", pagenum);
+
+    for(i = 0;i < mainObj.length; i++){
+      $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+                <td id = >"+ mainObj[i].id +"</td>\
+                <td id = >"+ mainObj[i].question +"</td>\
+                <td id = >"+ mainObj[i].answer +"</td>\
+                <td id = >"+ mainObj[i].subj +"</td>\
+                <td id = >"+ mainObj[i].point +"</td>\
+                <td id = >"+ mainObj[i].quetype +"</td>\
+                <td id = >"+  '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "delButton.call(this)"> Delete</button>' +"</td>\
+                <td id = >"+ '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "upButton.call(this)" data-toggle="modal" data-target="#myModal">Update</button>' +"</td>\
+                </tr>" 
+                );
+            }
+}
+
+$(document).ready(function() {
+    console.log("Working...")
     $.ajax({
-        url: '{% url "App:jquery_view" %}',
+        url: '/jquery_view/',
         datatype: 'json',
         type: 'GET',
         success: function (data) {
@@ -86,31 +135,38 @@ $(document).ready(function() {
 });
 
 function tableFromResponse(data) {
-        var count = $('#tableData').find('tr').length+1
 
-        var mainObj = data.results
+    var mainObj = data.results
+    var nextpage = data.next
 
-        var k = '<tbody id = "tableData">'
+    if (nextpage == null){
+        var pagenum  = "None"
+    }
+    else{
 
-        var id =mainObj[0].id
+        var pagenum = nextpage.split("/")[4]
+    }
+    $("#qTable tbody").attr("data-page", pagenum);
 
-        for(i = 0;i < mainObj.length; i++){
+    console.log("allright lets do this")
 
-            k+= '<tr id = "trid_'+ mainObj[i].id +'" data-question= "'+ mainObj[i].question + '" data-answer= "'+ mainObj[i].answer + '" data-subj= "'+ mainObj[i].subj + '" data-point= "'+ mainObj[i].point + '" data-quetype= "'+ mainObj[i].quetype + '" >';
-            k+= '<td id = "">' + mainObj[i].id + '</td>';
-            k+= '<td  width="20%">' + mainObj[i].question + '</td>';
-            k+= '<td id = >' + mainObj[i].answer + '</td>';
-            k+= '<td id = >' + mainObj[i].subj + '</td>';
-            k+= '<td id = >' + mainObj[i].point + '</td>';
-            k+= '<td id = >' + mainObj[i].quetype + '</td>';
-            k+= '<td>' + '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "delButton.call(this)"> Delete</button>' + '</td>';
-            k+= '<td>' + '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "upButton.call(this)" data-toggle="modal" data-target="#myModal">Update</button>' + '</td>';
-            k+= '</tr>';
-            }
-        k+='</tbody>';
-        document.getElementById('tableData').innerHTML = k;
-}
+            for(i = 0;i < mainObj.length; i++){
 
+              $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+                        <td id = >"+ mainObj[i].id +"</td>\
+                        <td id = >"+ mainObj[i].question +"</td>\
+                        <td id = >"+ mainObj[i].answer +"</td>\
+                        <td id = >"+ mainObj[i].subj +"</td>\
+                        <td id = >"+ mainObj[i].point +"</td>\
+                        <td id = >"+ mainObj[i].quetype +"</td>\
+                        <td id = >"+  '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "delButton.call(this)"> Delete</button>' +"</td>\
+                        <td id = >"+ '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "upButton.call(this)" data-toggle="modal" data-target="#myModal">Update</button>' +"</td>\
+                        </tr>" 
+                        );
+                    }
+
+    }
+/*Operations function */
 
 function delButton() {
 
@@ -176,7 +232,6 @@ console.log("okay")
         }
       });
 }
-
 
 </script>
 {% endblock %}

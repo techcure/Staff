@@ -7,11 +7,10 @@
 <div class="container">
   <h4>Python</h4>
 <a href="{% url 'home1' %}" class="btn btn-info" role="button">Add New question</a><br><br><br>
-  
   <div id="qTable" style="width:1200px; height:500px; overflow:auto;">
   <table class="table table-hover" id="qTable" cellspacing="0" cellpadding="1" width="300">
     <thead>
-      <tr>
+      <tr data-page = "pagenum">
         <th>Id</th>
         <th>Question</th>
         <th>Answer</th>
@@ -19,10 +18,9 @@
         <th>Points</th>
         <th>Quetype</th>
         <th></th>
-
       </tr>
     </thead>
-	 <tbody id="tableData" ></tbody>
+	 <tbody id="tableData" data-page="page"></tbody>
   </table>
 </div>
 </div>
@@ -30,7 +28,6 @@
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog" data-row_id="result">
     <div class="modal-dialog">
-    
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
@@ -75,28 +72,41 @@
   </div>
 <script type="text/javascript">
 
-    $(document).ready(function() {
-        $( "#qTable" ).scroll(function() {
+    $(document).ready(function(data) {
 
+        $( "#qTable" ).scroll(function() {
+        var newpage = $("#qTable tbody").attr("data-page");
         console.log("scroll called successfully")
-        $.ajax({
-            url: '{% url "App:python_view" %}',
-            datatype: 'json',
-            type: 'GET',
-            success: function (data) {
-                /*alert("Got data!")*/
-                report(data);
+
+        if(newpage != "None") {
+            $.ajax({
+                url: '/python_view/' + newpage,
+                datatype: 'json',
+                type: 'GET',
+                success: function (data) {
+                    /*alert("Got data!")*/
+                    report(data);
+                }
+            });
             }
         });
     });
-});
 
 function report(data){
 
     var mainObj = data.results
+    var nextpage = data.next
+
+    if(nextpage == null){
+        var pagenum  = "None"
+    }
+    else{
+
+        var pagenum = nextpage.split("/")[4]
+    }
+    $("#qTable tbody").attr("data-page", pagenum);
 
     for(i = 0;i < mainObj.length; i++){
-
       $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
                 <td id = >"+ mainObj[i].id +"</td>\
                 <td id = >"+ mainObj[i].question +"</td>\
@@ -109,16 +119,12 @@ function report(data){
                 </tr>" 
                 );
             }
-        }
+}
 
-</script>
-
-
-<script type="text/javascript">
 $(document).ready(function() {
     console.log("Working...")
     $.ajax({
-        url: '{% url "App:python_view" %}',
+        url: '/python_view/',
         datatype: 'json',
         type: 'GET',
         success: function (data) {
@@ -131,23 +137,36 @@ $(document).ready(function() {
 function tableFromResponse(data) {
 
     var mainObj = data.results
+    var nextpage = data.next
 
-    for(i = 0;i < mainObj.length; i++){
+    if (nextpage == null){
+        var pagenum  = "None"
+    }
+    else{
 
-      $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
-                <td id = >"+ mainObj[i].id +"</td>\
-                <td id = >"+ mainObj[i].question +"</td>\
-                <td id = >"+ mainObj[i].answer +"</td>\
-                <td id = >"+ mainObj[i].subj +"</td>\
-                <td id = >"+ mainObj[i].point +"</td>\
-                <td id = >"+ mainObj[i].quetype +"</td>\
-                <td id = >"+  '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "delButton.call(this)"> Delete</button>' +"</td>\
-                <td id = >"+ '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "upButton.call(this)" data-toggle="modal" data-target="#myModal">Update</button>' +"</td>\
-                </tr>" 
-                );
-            }
-        }
+        var pagenum = nextpage.split("/")[4]
+    }
+    $("#qTable tbody").attr("data-page", pagenum);
 
+    console.log("allright lets do this")
+
+            for(i = 0;i < mainObj.length; i++){
+
+              $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+                        <td id = >"+ mainObj[i].id +"</td>\
+                        <td id = >"+ mainObj[i].question +"</td>\
+                        <td id = >"+ mainObj[i].answer +"</td>\
+                        <td id = >"+ mainObj[i].subj +"</td>\
+                        <td id = >"+ mainObj[i].point +"</td>\
+                        <td id = >"+ mainObj[i].quetype +"</td>\
+                        <td id = >"+  '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "delButton.call(this)"> Delete</button>' +"</td>\
+                        <td id = >"+ '<button class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="button" onclick = "upButton.call(this)" data-toggle="modal" data-target="#myModal">Update</button>' +"</td>\
+                        </tr>" 
+                        );
+                    }
+
+    }
+/*Operations function */
 
 function delButton() {
 
@@ -217,9 +236,3 @@ console.log("okay")
 </script>
 {% endblock %}
 </body>
-
-<!-- 
-1) print hello while scroll
-2) Add ajax code inisde scroll
-2) call ajax and append data in previous row
- -->
