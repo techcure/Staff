@@ -12,33 +12,323 @@
 </form>
 
 
-<div class="col-sm-4">
+<div class="col-sm-3">
 <select class="form-control" id="sname" name="sname">
-<option value="name" id="name">Name</option>
-
+    <option value="name" id="name" data-id = "id" data-name = "name">Select Name</option>
 </select>
 </div>
 
+<button class = "btn btn-secondary" id="rrrr" type="button" onclick="takingtest.call(this)"> Start Test </button>
+
+<div class="col-sm-2">
+    <select class="form-control" id="subj" name="subj" required>
+        <option>Select Subject</option>
+        <option value="Python" id="Python">Python</option>
+        <option value="JQuery" id="JQuery">JQuery</option>
+        <option value="HTML" id="HTML">HTML</option>
+    </select>
+</div>
+
+<div class="col-sm-2" id="r" style="font-size: 18px;"></div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="container">
+  <div id="qTable" style="width:1200px; height:500px; overflow:auto;">
+  <table class="table table-hover" id="qTable" cellspacing="0" cellpadding="1" width="300">
+    <thead>
+      <tr data-page = "pagenum">
+        <th></th>
+        <th>Id</th>
+        <th>Question</th>
+        <th>Answer</th>
+        <th>Subj</th>
+        <th>Points</th>
+        <th>Quetype</th>
+        <th></th>
+      </tr>
+    </thead>
+     <tbody id="tableData" data-page="page"></tbody>
+  </table>
+</div>
+</div>
+
+<button class = "btn btn-secondary" id="rrrr" type="button" onclick="generatereport.call(this)"> Generate Result</button>
+
+
+<head>
+  <h2> Result :</h2>
+</head>
+<body>
+
+<table class="table table-bordered" id="tResult">
+                            <thead>
+                                <tr data-name = "name" data-subj = "subj">
+                                    <td><strong id = "stuname" data-name = "name"></strong></td>
+                                    <td class="text-center" data-subj = "subj"><strong id="pythonid" data-subj = "subj"></strong></td>
+                                    <td class="text-center"><strong>JQuery</strong></td>
+                                    <td class="text-right"><strong>HTML</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="Easy">Easy</td>
+                                    <td id = "e_point" data-e_point = "point" class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-right"></td>
+                                </tr>
+                                <tr>
+                                    <td id="Medium">Medium</td>
+                                    <td id = "m_point" data-m_point = "point" class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-right"></td>
+                                </tr>
+                                <tr >
+                                    <td id="Hard">Hard</td>
+                                    <td id = "h_point" data-h_point = "point" class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-right"></td>
+                                </tr>
+                                <br>
+                                <tr>
+                                    <td class="highrow"> <strong>Subtotal</strong></td>
+                                    <td id = "a_total" data-a_total = "a_total" class="highrow"></td>
+                                    <td class="highrow text-center"></td>
+                                    <td class="highrow text-right">958.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="emptyrow"></td>
+                                    <td class="emptyrow"></td>
+                                    <td class="emptyrow text-center"><strong>Avg Points</strong></td>
+                                    <td class="emptyrow text-right">20</td>
+                                </tr>
+                                <tr>
+                                    <td class="emptyrow"><i class="fa fa-barcode iconbig"></i></td>
+                                    <td class="emptyrow"></td>
+                                    <td class="emptyrow text-center"><strong>Total</strong></td>
+                                    <td class="emptyrow text-right">978.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+</body>
+
 <script type="text/javascript">
-console.log("working...")
-$(document).ready(function() {
-    $.ajax({
-        url: '{% url "App:stu_detail" %}',
-        datatype: 'json',
-        type: 'GET',
-        success: function (data) {
-            alert("Got data!")
-            getStudent(data);
-        }
-    });
-});
 
-function getStudent(data){
-    var name = data;
 
-    $('select[name="sname"]').val(name[0].name)
+function takingtest(){
+
+   /* alert("continue")*/
+
+      var count = 15;
+        var interval = setInterval(function(){
+          document.getElementById('r').innerHTML=count;
+          count--;
+          if (count === 0){
+            clearInterval(interval);
+            document.getElementById('r').innerHTML='Done';
+            // or...
+            alert("You're out of time!");
+          }
+        }, 1000);
+
+        var namereset = $('#tResult thead #stuname').children()[0].dataset.name
+        var subj = $('#tResult thead #pythonid').children()[0].dataset.subj
+        var points = $("#point_input").val()
+
+        var e_point = parseInt($('#tResult tbody #e_point').children()[0].dataset.e_point)
+        var m_point = parseInt($('#tResult tbody #m_point').children()[0].dataset.m_point)
+        var h_point = parseInt($('#tResult tbody #h_point').children()[0].dataset.h_point)
 
 }
+
+
+$(document).ready(function() {
+        $('#sname').on('change', function() {
+
+            var stuname = this.value;
+            /*alert(stuname);*/
+                var stuname1 = $('#tResult thead #stuname').append("<tr data-name = '"+ stuname +"' > <td>  "+ stuname +" </td> </tr>")
+                var namereset = $('#tResult thead #stuname').children()[0].dataset.name
+        });
+
+        $.ajax({
+            url: '/stu_detail/',
+            datatype: 'json',
+            type: 'GET',
+            success: function (data) {
+                /*alert("Got data!")*/
+                getStudent(data);
+            }
+        });
+    });
+
+function getStudent(data){
+    
+    var name = data.results;
+        for(i = 0;i < name.length; i++){
+            $('#sname').append("<option value= '"+ name[i].name +"' data-id = '"+ name[i].id + "' data-name = '"+ name[i].name + "' > " + name[i].name + " </option>");
+        }
+}
+
+function clickmefunction(){
+    
+    var question = $(this)[0].dataset.id
+
+    var question = $(this)[0].dataset.question
+    var answer =$(this)[0].dataset.answer
+    var subj = $(this)[0].dataset.subj
+    var quetype = $(this)[0].dataset.quetype
+    var point = $(this)[0].dataset.point
+
+    /*alert($(this)[0].id.split("_")[1])*/
+    /*alert(point)*/
+
+    if(quetype=='Easy'){
+    
+        var e_point = $('#tResult tbody #e_point').append("<tr data-e_point = '" + point + "'> <td>  "+ point +" </td> </tr>")
+
+    }
+    if(quetype=='Medium')
+    {
+        var m_point = $('#tResult tbody #m_point').append("<tr data-m_point = '" + point + "'> <td>  "+ point +" </td> </tr>")
+
+    }
+    if(quetype=='Hard')
+    {
+        var h_point = $('#tResult tbody #h_point').append("<tr data-h_point = '" + point + "'> <td>  "+ point +" </td> </tr>")
+
+    }
+}
+
+function generatereport(){
+
+
+    var e_point = parseInt($('#tResult tbody #e_point').children()[0].dataset.e_point)
+    var m_point = parseInt($('#tResult tbody #m_point').children()[0].dataset.m_point)
+    var h_point = parseInt($('#tResult tbody #h_point').children()[0].dataset.h_point)
+
+    var addition = e_point + m_point + h_point
+    var per = addition/3
+
+    $('#tResult tbody #a_total').append(" <tr data-a_total = "+ per + "> <td> "+ per +" % </td> </tr>")
+
+    alert(per)
+
+}
+
+$('#subj').on('change', function() {
+  var subj = this.value;
+  /*alert(subj);*/
+  var subj1 = $('#tResult thead #pythonid').append("<tr data-subj = "+ subj +"> <td>  "+ subj +" </td> </tr>")
+
+if(subj=="Python"){
+
+        $( "#qTable" ).scroll(function() {
+        var newpage = $("#qTable tbody").attr("data-page");
+        console.log("scroll called successfully")
+
+        if(newpage != "None") {
+            $.ajax({
+                url: '/python_view/' + newpage,
+                datatype: 'json',
+                type: 'GET',
+                success: function (data) {
+                    /*alert("Got data!")*/
+                    report(data);
+                }
+            });
+            }
+        });
+
+    function report(data){
+
+        var mainObj = data.results
+        var nextpage = data.next
+
+        if(nextpage == null){
+            var pagenum  = "None"
+        }
+        else{
+
+            var pagenum = nextpage.split("/")[4]
+        }
+        $("#qTable tbody").attr("data-page", pagenum);
+
+        for(i = 0;i < mainObj.length; i++){
+          $( "#qTable tbody" ).append( "<tr onclick = 'clickmefunction.call(this)' id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+                    <td id = 'clickme'></td>\
+                    <td id = >"+ mainObj[i].id +"</td>\
+                    <td id = >"+ mainObj[i].question +"</td>\
+                    <td id = >"+ mainObj[i].answer +"</td>\
+                    <td id = >"+ mainObj[i].subj +"</td>\
+                    <td id = >"+ mainObj[i].point +"</td>\
+                    <td id = >"+ mainObj[i].quetype +"</td>\
+                    <td id = id = 'point_input' >"+  '<input id = "point_input" oninput="updateInput()" class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="text"></input>' +"</td>\
+                    </tr>" 
+                    );
+                }
+}
+
+    $(document).ready(function() {
+        $.ajax({
+            url: '/python_view/',
+            datatype: 'json',
+            type: 'GET',
+            success: function (data) {
+                /*alert("Got data!")*/
+                tableFromResponse(data);
+            }
+        });
+    });
+
+    function tableFromResponse(data) {
+
+        var mainObj = data.results
+        var nextpage = data.next
+
+        if (nextpage == null){
+            var pagenum  = "None"
+        }
+        else{
+
+            var pagenum = nextpage.split("/")[4]
+        }
+        $("#qTable tbody").attr("data-page", pagenum);
+
+        console.log("allright lets do this")
+
+                for(i = 0;i < mainObj.length; i++){
+
+                  $( "#qTable tbody" ).append( "<tr onclick = 'clickmefunction.call(this)'  id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+                            <td id = 'clickme'></td>\
+                            <td id = >"+ mainObj[i].id +"</td>\
+                            <td id = >"+ mainObj[i].question +"</td>\
+                            <td id = >"+ mainObj[i].answer +"</td>\
+                            <td id = >"+ mainObj[i].subj +"</td>\
+                            <td id = >"+ mainObj[i].point +"</td>\
+                            <td id = >"+ mainObj[i].quetype +"</td>\
+                            <td id = id = 'point_input' >"+  '<input id = "point_input" oninput="updateInput()" class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="text"></input>' +"</td>\
+                            </tr>" 
+                            );
+                        }
+        
+        }
+
+
+      }
+
+
+
+});
+    function updateInput() {
+
+      var x = $("#point_input").val();
+
+      alert(x)
+      /*document.getElementById("demo").innerHTML = "You wrote: " + x;*/
+    }
 
 </script>
 

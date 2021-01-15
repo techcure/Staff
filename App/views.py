@@ -39,11 +39,6 @@ from rest_framework import generics
 from django.urls import reverse_lazy
 
 
-# 1) click on python show one blank html page where page name is python_questions.htnl
-# 2) in python_questions.htnl add html table where table body shoulldb be blank
-# 3) call ajax while onload and call python_queation list api
-# 4) and get the response from the api in ajax and append data in table body same like you did for testjob
-
 @api_view(["POST", "GET"])
 def Home1(request, format=None, *args, **kwargs):
 
@@ -57,7 +52,6 @@ def Home1(request, format=None, *args, **kwargs):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return render(request, 'question-create.html')
-
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def question_op(request, pk):
@@ -86,29 +80,84 @@ class DisplayStudents(TemplateView):
     queryset = Stud.objects.all().values()
     serializer_class = StudSerializer
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def stu_detail(request, *pk, **kwargs):
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def stu_detail(request, *pk, **kwargs):
 
-    try:
-        snippet = Stud.objects.all()
-    except Stud.DoesNotExist:
-        return HttpResponse(status=404)
+#     try:
+#         snippet = Stud.objects.all()
+#     except Stud.DoesNotExist:
+#         return HttpResponse(status=404)
 
-    if request.method == 'GET':
-        stdq = Stud.objects.all()
-        serializer = StudSerializer(stdq, many=True)
-        return JsonResponse(serializer.data, safe=False)
+#     if request.method == 'GET':
+#         stdq = Stud.objects.all()
+#         serializer = StudSerializer(stdq, many=True)
+#         return JsonResponse(serializer.data, safe=False)
 
-    elif request.method == 'POST':
-        print("okay")
-        serializer = StudSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            print(serializer.errors)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    return render(request, 'test_view.html')
+#     elif request.method == 'POST':
+#         print("okay")
+#         serializer = StudSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#         else:
+#             print(serializer.errors)
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     return render(request, 'test_view.html')
+
+
+
+class StudentViewSet(viewsets.ModelViewSet):
+    queryset = Stud.objects.all()
+    serializer_class = StudSerializer
+
+    pagination_class = LargeResultsSetPagination
+    pagination_class = StandardResultsSetPagination
+
+    def get(self, request, *args, **kwargs):
+        numbers_list = range(1, 1000)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(numbers_list, 20)
+        que_obj = StudSerializer.objects.all()
+
+        serializer = StudSerializer(que_obj)
+
+        try:
+            numbers = paginator.page(page)
+        except PageNotAnInteger:
+            numbers = paginator.page(1)
+        except EmptyPage:
+            numbers = paginator.page(paginator.num_pages)
+        return Response(serializer.data)
+
+        queryset = Stud.objects.all()
+        return Response({'data': response.data})
+
+        context = {'queryset': queryset,}
+
+        html = render_to_string(template_name, context)
+        return HttpResponse(html)
+
+    def list(self, request, *args, **kwargs):
+        response = super(StudentViewSet, self).list(request, *args, **kwargs)
+        if request.accepted_renderer.format == 'html':
+            return Response({'data': response.data})
+
+        return response
+
+    def delete(self, request, pk, format=None, *args, **kwargs):
+        que_obj = self.get_object(pk)
+        que_obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, format=None, *args, **kwargs):
+        if request.method == 'POST':
+            serializer = StudSerializer(data=request.data)
+            # import pdb;pdb.set_trace()
+            if serializer.is_valid():
+                serializer.save()
+                print(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DisplayPython(TemplateView):
