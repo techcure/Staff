@@ -50,7 +50,7 @@
         <th></th>
       </tr>
     </thead>
-     <tbody id="tableData" data-page="page"></tbody>
+     <tbody id="tableData" data-page="page" data-id="id" data-mark = "mark"></tbody>
   </table>
 </div>
 </div>
@@ -73,20 +73,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td id="Easy">Easy</td>
+                                <tr data-iddd = "iddd" id="e_result">
+                                    <td id="Easy">Easy <br> each has 2 points</td>
                                     <td id = "e_point" data-e_point = "point" class="text-center"></td>
-                                    <td class="text-center"></td>
+                                    <td id = "o_point" class="text-center"></td>
                                     <td class="text-right"></td>
                                 </tr>
                                 <tr>
-                                    <td id="Medium">Medium</td>
+                                    <td id="Medium">Medium <br> each has 3 points</td>
                                     <td id = "m_point" data-m_point = "point" class="text-center"></td>
                                     <td class="text-center"></td>
                                     <td class="text-right"></td>
                                 </tr>
                                 <tr >
-                                    <td id="Hard">Hard</td>
+                                    <td id="Hard">Hard <br> each has 5 points</td>
                                     <td id = "h_point" data-h_point = "point" class="text-center"></td>
                                     <td class="text-center"></td>
                                     <td class="text-right"></td>
@@ -118,7 +118,6 @@
 
 
 function takingtest(){
-
    /* alert("continue")*/
 
       var count = 15;
@@ -136,6 +135,8 @@ function takingtest(){
         var namereset = $('#tResult thead #stuname').children()[0].dataset.name
         var subj = $('#tResult thead #pythonid').children()[0].dataset.subj
         var points = $("#point_input").val()
+
+        $( "#qTable tbody #point_input_"+ mainObj[0].id +"").children("#point_input").val()
 
         var e_point = parseInt($('#tResult tbody #e_point').children()[0].dataset.e_point)
         var m_point = parseInt($('#tResult tbody #m_point').children()[0].dataset.m_point)
@@ -172,35 +173,6 @@ function getStudent(data){
         }
 }
 
-function clickmefunction(){
-    
-    var question = $(this)[0].dataset.id
-
-    var question = $(this)[0].dataset.question
-    var answer =$(this)[0].dataset.answer
-    var subj = $(this)[0].dataset.subj
-    var quetype = $(this)[0].dataset.quetype
-    var point = $(this)[0].dataset.point
-
-    /*alert($(this)[0].id.split("_")[1])*/
-    /*alert(point)*/
-
-    if(quetype=='Easy'){
-    
-        var e_point = $('#tResult tbody #e_point').append("<tr data-e_point = '" + point + "'> <td>  "+ point +" </td> </tr>")
-
-    }
-    if(quetype=='Medium')
-    {
-        var m_point = $('#tResult tbody #m_point').append("<tr data-m_point = '" + point + "'> <td>  "+ point +" </td> </tr>")
-
-    }
-    if(quetype=='Hard')
-    {
-        var h_point = $('#tResult tbody #h_point').append("<tr data-h_point = '" + point + "'> <td>  "+ point +" </td> </tr>")
-
-    }
-}
 
 function generatereport(){
 
@@ -254,10 +226,15 @@ if(subj=="Python"){
 
             var pagenum = nextpage.split("/")[4]
         }
+
+        var iddd = mainObj[0].id
+
         $("#qTable tbody").attr("data-page", pagenum);
+        $("#qTable tbody").attr("data-id", iddd);
+
 
         for(i = 0;i < mainObj.length; i++){
-          $( "#qTable tbody" ).append( "<tr onclick = 'clickmefunction.call(this)' id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+          $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
                     <td id = 'clickme'></td>\
                     <td id = >"+ mainObj[i].id +"</td>\
                     <td id = >"+ mainObj[i].question +"</td>\
@@ -265,11 +242,16 @@ if(subj=="Python"){
                     <td id = >"+ mainObj[i].subj +"</td>\
                     <td id = >"+ mainObj[i].point +"</td>\
                     <td id = >"+ mainObj[i].quetype +"</td>\
-                    <td id = id = 'point_input' >"+  '<input id = "point_input" oninput="updateInput()" class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="text"></input>' +"</td>\
+                    <td id = 'point_input_"+ mainObj[i].id +"' >"+  '<input id = "point_input" onchange="updateInput.call(this)" hu='+ mainObj[i].quetype +' hu_points='+ mainObj[i].point +'  class = "btn btn-secondary" type="number"></input>' +"</td>\
                     </tr>" 
                     );
                 }
 }
+
+    
+
+
+
 
     $(document).ready(function() {
         $.ajax({
@@ -297,11 +279,17 @@ if(subj=="Python"){
         }
         $("#qTable tbody").attr("data-page", pagenum);
 
+
+        var iddd = mainObj[0].id
+
+        $("#qTable tbody").attr("data-page", pagenum);
+        $("#qTable tbody").attr("data-id", iddd);
+
         console.log("allright lets do this")
 
                 for(i = 0;i < mainObj.length; i++){
 
-                  $( "#qTable tbody" ).append( "<tr onclick = 'clickmefunction.call(this)'  id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+                  $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
                             <td id = 'clickme'></td>\
                             <td id = >"+ mainObj[i].id +"</td>\
                             <td id = >"+ mainObj[i].question +"</td>\
@@ -309,28 +297,51 @@ if(subj=="Python"){
                             <td id = >"+ mainObj[i].subj +"</td>\
                             <td id = >"+ mainObj[i].point +"</td>\
                             <td id = >"+ mainObj[i].quetype +"</td>\
-                            <td id = id = 'point_input' >"+  '<input id = "point_input" oninput="updateInput()" class = "btn btn-secondary" data-id= "'+ mainObj[i].id + '" type="text"></input>' +"</td>\
+                            <td id = 'point_input_"+ mainObj[i].id + "' data-id= "+ mainObj[i].id +">"+  '<input id = "point_input" onchange="updateInput.call(this)" hu='+ mainObj[i].quetype +' hu_points='+ mainObj[i].point +' class = "btn btn-secondary" type="number"></input>' +"</td>\
                             </tr>" 
                             );
                         }
-        
-        }
-
+            }
 
       }
 
-
-
 });
-    function updateInput() {
+    function updateInput(val) {
 
-      var x = $("#point_input").val();
+        
+        var val =$(this).val()
 
-      alert(x)
-      /*document.getElementById("demo").innerHTML = "You wrote: " + x;*/
+
+        var quetype = $(this).attr('hu');
+        var  hu_points = $(this).attr('hu_points');
+
+
+        var e_counter = $('#tResult tbody #e_point').find('tr').length+1
+        var m_counter = $('#tResult tbody #m_point').find('tr').length+1
+        var h_counter = $('#tResult tbody #h_point').find('tr').length+1
+
+
+        $('#tResult tbody #e_point').find("tr").data.iddd
+
+
+            if((quetype == "Easy") && (val==hu_points || val<hu_points) ){
+            
+                var e_point = $('#tResult tbody #e_point').append("<tr data-iddd = e_count_"+ e_counter +" data-e_point = '" + val + "'><td> ("+ e_counter +"). "+ val +" points </td> </tr>")
+
+            }
+
+            if((quetype == "Medium") && (val==hu_points || val<hu_points))
+            {
+                var m_point = $('#tResult tbody #m_point').append("<tr data-m_point = '" + val + "'> <td> ("+ m_counter +"). "+ val +" points </td> </tr>")
+
+            }
+            if((quetype == "Hard") && (val==hu_points || val<hu_points))
+            {
+                var h_point = $('#tResult tbody #h_point').append("<tr data-h_point = '" + val + "'> <td> ("+ h_counter +"). "+ val +" points </td> </tr>")
+
+            }
     }
 
 </script>
-
 
 {% endblock %}
