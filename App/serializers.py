@@ -68,3 +68,22 @@ class StudSerializer(serializers.ModelSerializer):
         print(validated_data)
         return Stud.objects.create(**validated_data)
 
+
+class ExaminPointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExaminPoint
+        fields = '__all__'
+
+    def get(self, *obj):
+        queryset = ExaminPoint.objects.all()
+        std = ExaminPointSerializer(queryset, many=True, context=self.context).data
+        return Question
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name',instance.name)
+        instance.save()
+        return instance
+
+    def create(self, validated_data):
+        print(validated_data)
+        return ExaminPoint.objects.create(**validated_data)

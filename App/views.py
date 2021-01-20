@@ -29,7 +29,7 @@ from django.views.generic import CreateView
 from django.http import JsonResponse
 from django.views import View
 from App.serializers import (UserSerializer, 
-    GroupSerializer, QuestionSerializer, StudSerializer, 
+    GroupSerializer, QuestionSerializer, StudSerializer, ExaminPointSerializer,
     # StaffSignUpForm, StudentSignUpForm
     )
 
@@ -37,6 +37,58 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
 from rest_framework import generics
 from django.urls import reverse_lazy
+
+
+class ExaminPointViewSet(viewsets.ModelViewSet):
+
+    queryset = ExaminPoint.objects.all()
+    serializer_class = ExaminPointSerializer
+
+    pagination_class = LargeResultsSetPagination
+    pagination_class = StandardResultsSetPagination
+
+    def get(self, request, format=None, *args, **kwargs):
+
+        numbers_list = range(1, 20)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(numbers_list, 20)
+        que_obj = ExaminPointSerializer.objects.filter(subj='Python')
+
+        serializer = ExaminPointSerializer(que_obj)
+
+        try:
+            numbers = paginator.page(page)
+        except PageNotAnInteger:
+            numbers = paginator.page(1)
+        except EmptyPage:
+            numbers = paginator.page(paginator.num_pages)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        response = super(ExaminPointViewSet, self).list(request, *args, **kwargs)
+        user_obj = ExaminPoint.objects.all()
+        if request.accepted_renderer.format == 'html':
+            return Response({'data': response.data, 'user_obj':user_obj})
+        return response
+
+    def post(self, request, format=None, *args, **kwargs):
+
+        if request.method == 'POST':
+            import pdb;pdb.set_trace()
+            serializer = ExaminPointSerializer(name_obj, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                print(serializer.errors)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk, format=None, *args, **kwargs):
+        que_obj = self.get_object(pk)
+        que_obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 
 
 @api_view(["POST", "GET"])
@@ -64,7 +116,7 @@ def question_op(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def question_put(request, pk, ormat=None, *args, **kwargs):
+def question_put(request, pk, format=None, *args, **kwargs):
     if request.method == 'PUT':
         question = Question.objects.get(id=pk)
         serializer = QuestionSerializer(question, data=request.data)

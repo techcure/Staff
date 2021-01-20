@@ -73,9 +73,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-iddd = "iddd" id="e_result">
+                                <tr data-iddd = "iddd" id="e_result" data-e_point = "val">
                                     <td id="Easy">Easy <br> each has 2 points</td>
-                                    <td id = "e_point" data-e_point = "point" class="text-center"></td>
+                                    <td id = "e_point" data-e_point = "point" ty = "ty" class="text-center"></td>
                                     <td id = "o_point" class="text-center"></td>
                                     <td class="text-right"></td>
                                 </tr>
@@ -115,35 +115,6 @@
 </body>
 
 <script type="text/javascript">
-
-
-function takingtest(){
-   /* alert("continue")*/
-
-      var count = 15;
-        var interval = setInterval(function(){
-          document.getElementById('r').innerHTML=count;
-          count--;
-          if (count === 0){
-            clearInterval(interval);
-            document.getElementById('r').innerHTML='Done';
-            // or...
-            alert("You're out of time!");
-          }
-        }, 1000);
-
-        var namereset = $('#tResult thead #stuname').children()[0].dataset.name
-        var subj = $('#tResult thead #pythonid').children()[0].dataset.subj
-        var points = $("#point_input").val()
-
-        $( "#qTable tbody #point_input_"+ mainObj[0].id +"").children("#point_input").val()
-
-        var e_point = parseInt($('#tResult tbody #e_point').children()[0].dataset.e_point)
-        var m_point = parseInt($('#tResult tbody #m_point').children()[0].dataset.m_point)
-        var h_point = parseInt($('#tResult tbody #h_point').children()[0].dataset.h_point)
-
-}
-
 
 $(document).ready(function() {
         $('#sname').on('change', function() {
@@ -250,9 +221,6 @@ if(subj=="Python"){
 
     
 
-
-
-
     $(document).ready(function() {
         $.ajax({
             url: '/python_view/',
@@ -297,7 +265,7 @@ if(subj=="Python"){
                             <td id = >"+ mainObj[i].subj +"</td>\
                             <td id = >"+ mainObj[i].point +"</td>\
                             <td id = >"+ mainObj[i].quetype +"</td>\
-                            <td id = 'point_input_"+ mainObj[i].id + "' data-id= "+ mainObj[i].id +">"+  '<input id = "point_input" onchange="updateInput.call(this)" hu='+ mainObj[i].quetype +' hu_points='+ mainObj[i].point +' class = "btn btn-secondary" type="number"></input>' +"</td>\
+                            <td id = 'point_input_"+ mainObj[i].id + "' data-id= "+ mainObj[i].id +">"+  '<input id = "point_input" onchange="updateInput.call(this)" hu='+ mainObj[i].quetype +' hu_points='+ mainObj[i].point +' class = "btn btn-secondary" type="number" myid = '+ mainObj[i].id +' ></input>' +"</td>\
                             </tr>" 
                             );
                         }
@@ -306,6 +274,7 @@ if(subj=="Python"){
       }
 
 });
+
     function updateInput(val) {
 
         
@@ -321,12 +290,45 @@ if(subj=="Python"){
         var h_counter = $('#tResult tbody #h_point').find('tr').length+1
 
 
-        $('#tResult tbody #e_point').find("tr").data.iddd
+        var allpoints = $('#tResult tbody #e_point').attr("data-allpoints", val)
+
+        $('#tResult tbody #e_point').find("tr")
+        var number = $('#tResult tbody #e_point').html()
 
 
+        var e_ary = [];
+        console.log(e_ary);
             if((quetype == "Easy") && (val==hu_points || val<hu_points) ){
             
-                var e_point = $('#tResult tbody #e_point').append("<tr data-iddd = e_count_"+ e_counter +" data-e_point = '" + val + "'><td> ("+ e_counter +"). "+ val +" points </td> </tr>")
+                var e_point = $('#tResult tbody #e_point').append("<tr data-iddd = e_count_"+ e_counter +" data-e_point = '" + val + "'><td class='attrName'> ("+ e_counter +"). "+ val +" points </td> </tr>")
+
+                var name = $(this).parent().parent()[0].dataset.name
+
+                var question = $(this).parent().parent()[0].dataset.question
+                var answer = $(this).parent().parent()[0].dataset.answer
+                var quetype = $(this).parent().parent()[0].dataset.quetype
+                var point = $(this).parent().parent()[0].dataset.point
+                var subj = $(this).parent().parent()[0].dataset.subj
+
+                var val =$(this).val()
+                var qid = $(this).attr("myid")
+                var sname = $('#sname').val()
+
+
+                e_ary.push({name: sname, e_point: val, question: question, answer: answer, quetype: quetype, subj: subj, e_maxpoints:point});
+
+
+            alert(JSON.stringify(e_ary));
+
+                $.ajax({
+                  type: 'POST',
+                  url: '/examinpoint/' + qid,
+                  dataType:'json',
+                  data: JSON.stringify(e_ary),
+                  success: function(data, textStatus, jqXHR) {
+                    alert("success");
+                  }
+                });
 
             }
 
@@ -341,6 +343,37 @@ if(subj=="Python"){
 
             }
     }
+
+
+
+function takingtest(){
+   /* alert("continue")*/
+
+      var count = 15;
+        var interval = setInterval(function(){
+          document.getElementById('r').innerHTML=count;
+          count--;
+          if (count === 0){
+            clearInterval(interval);
+            document.getElementById('r').innerHTML='Done';
+            // or...
+            alert("You're out of time!");
+          }
+        }, 1000);
+
+        var namereset = $('#tResult thead #stuname').children()[0].dataset.name
+        var subj = $('#tResult thead #pythonid').children()[0].dataset.subj
+        var points = $("#point_input").val()
+
+        $( "#qTable tbody #point_input_"+ mainObj[0].id +"").children("#point_input").val()
+
+        var e_point = parseInt($('#tResult tbody #e_point').children()[0].dataset.e_point)
+        var m_point = parseInt($('#tResult tbody #m_point').children()[0].dataset.m_point)
+        var h_point = parseInt($('#tResult tbody #h_point').children()[0].dataset.h_point)
+
+}
+
+
 
 </script>
 

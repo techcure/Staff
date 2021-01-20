@@ -15,6 +15,9 @@ urlpatterns = [
     path('jquery_view/', JQueryViewSet.as_view({'get': 'list'}), name='jquery_view'),
     path('stud_view/', StudentViewSet.as_view({'get': 'list'}), name='stud_view'),
     path('html_view/', HTMLViewSet.as_view({'get': 'list'}), name = 'html_view'),
+    path('stu_detail/', StudentViewSet.as_view({'get': 'list'}), name='stu_detail'),
+    path('examinpoint/<int:pk>', ExaminPointViewSet.as_view({'get': 'list'}),name = 'examinpoint'),
+
 
     path('display-python-que/', display_python_que.as_view()),
     path('<pk>/update_question', UpdateQuestion.as_view()),
@@ -25,7 +28,7 @@ urlpatterns = [
     path('question_op/<int:pk>/', question_op, name='question_op'),
     path('question_put/<int:pk>/', question_put, name='question_put'),
     path('take-test/', DisplayStudents.as_view(), name='take-test'),
-    path('stu_detail/', StudentViewSet.as_view({'get': 'list'}), name='stu_detail')
+    
 ]
 
 format_suffix_patterns(urlpatterns)
