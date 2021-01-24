@@ -5,7 +5,8 @@
 
 <form action="" method="POST">
 
-<h2>Let's do this.....! </h2><br><br>
+<h2>Points </h2>
+<br><br>
 
 <p id="responsecontainer"></p>
 
@@ -13,61 +14,28 @@
 
 
 <div class="col-sm-3">
-<select class="form-control" id="sname" name="sname">
+<!-- <select class="form-control" id="sname" name="sname">
     <option value="name" id="name" data-id = "id" data-name = "name">Select Name</option>
-</select>
+</select> -->
+
+<input class="form-control" onchange = "generatereport.call(this)" name = "sname" id="sname" data-id = "id" data-name = "name" placeholder="Enter Name"></input>
+
+
 </div>
 
-<button class = "btn btn-secondary" id="rrrr" type="button" onclick="starttest.call(this)"> Start Test </button>
-
-<div class="col-sm-2">
-    <select class="form-control" id="subj" name="subj" required>
-        <option>Select Subject</option>
-        <option value="Python" id="Python">Python</option>
-        <option value="JQuery" id="JQuery">JQuery</option>
-        <option value="HTML" id="HTML">HTML</option>
-    </select>
-</div>
-
-<div class="col-sm-2" id="r" style="font-size: 18px;"></div>
-<br>
-<br>
-<br>
-<br>
-<br>
-<div class="container">
-  <div id="qTable" style="width:1200px; height:500px; overflow:auto;">
-  <table class="table table-hover" id="qTable" cellspacing="0" cellpadding="1" width="300">
-    <thead>
-      <tr data-page = "pagenum">
-        <th></th>
-        <th>Id</th>
-        <th>Question</th>
-        <th>Answer</th>
-        <th>Subj</th>
-        <th>Points</th>
-        <th>Quetype</th>
-        <th></th>
-      </tr>
-    </thead>
-     <tbody id="tableData" data-page="page" data-id="id" data-mark = "mark"></tbody>
-  </table>
-</div>
-</div>
-
-<ul id="testresultButton"><a href="{% url 'App:test-results' %}">Results</a></ul>
-
+<button class = "btn btn-secondary" id="rrrr" type="button" onclick="generatereport.call(this)"> Generate Result</button>
 
 <head>
 </head>
 <body>
-
+<br><br>
 <table class="table table-bordered" id="tResult">
                             <thead>
                                 <tr data-name = "name" data-subj = "subj">
                                     <td><strong id = "stuname" data-name = "name"></strong></td>
-                                    <td class="text-center" data-subj = "subj"><strong id="pythonid" data-subj = "subj"></strong></td>
-                                    <td class="text-center"><strong>Python</strong></td>
+                                    <td class="text-center" data-subj = "subj"><strong id="pythonid" data-subj = "subj">
+                                    Python
+                                    </strong></td>
                                     <td class="text-center"><strong>JQuery</strong></td>
                                     <td class="text-right"><strong>HTML</strong></td>
                                 </tr>
@@ -115,14 +83,11 @@
 </body>
 
 <script type="text/javascript">
-    $("#tResult").hide();
-    $("#qTable").hide();
-    $("#rrrr").hide();
-    $("#testresultButton").hide();
+
+$("#tResult").hide()
+
 $(document).ready(function() {
-
         $('#sname').on('change', function() {
-
             var stuname = this.value;
             /*alert(stuname);*/
                 var stuname1 = $('#tResult thead #stuname').append("<tr data-name = '"+ stuname +"' > <td>  "+ stuname +" </td> </tr>")
@@ -151,8 +116,6 @@ function getStudent(data){
 
 $('#subj').on('change', function() {
   var subj = this.value;
-  $("#qTable").show();
-  $("#rrrr").show();
   /*alert(subj);*/
   var subj1 = $('#tResult thead #pythonid').append("<tr data-subj = "+ subj +"> <td data-subj = "+ subj +">  "+ subj +" </td> </tr>")
 
@@ -214,7 +177,6 @@ if(subj=="Python"){
     
 
     $(document).ready(function() {
-
         $.ajax({
             url: '/python_view/',
             datatype: 'json',
@@ -263,6 +225,7 @@ if(subj=="Python"){
                             );
                         }
             }
+
       }
 
 });
@@ -319,7 +282,6 @@ if(subj=="Python"){
                   data: {name: sname, givenpoint: val, question: question, point:point},
                   success: function(data, textStatus, jqXHR) {
                     alert("success");
-                    $("#qTable tbody #point_input" ).hide()
                   }
                 });
             }
@@ -401,6 +363,9 @@ function starttest(){
 
       var count = 30;
         var interval = setInterval(function(){
+
+
+
           document.getElementById('r').innerHTML=count;
           count--;
           if (count === 0){
@@ -409,7 +374,6 @@ function starttest(){
             // or...
             alert("You're out of time!");
             $("#qTable tbody #point_input" ).prop('disabled', true);
-            $("#testresultButton").show();
           }
         }, 1000);
 
@@ -430,6 +394,11 @@ function starttest(){
 
 function generatereport(){
 
+    if($("#sname").val()==""){
+        alert("Did you forget to enter name ?")
+        return false
+        location.reload()
+    }
         $.ajax({
             url: '/examinpoint/',
             datatype: 'json',
@@ -439,19 +408,26 @@ function generatereport(){
                 examinpoint(data);
             }
         });
+
 }
 
 
-    function examinpoint(data){
 
-        var mainObj = data.results
-        var nextpage = data.next
+function examinpoint(data){
 
-        name = mainObj[0].name.name
-        point = mainObj[0].question.point
-/*        alert($('#sname').val())
-        alert($('#tResult thead #pythonid')[0].children[0].dataset.subj)*/
+    var mainObj = data.results
+    var nextpage = data.next
 
+    name = mainObj[0].name.name
+    point = mainObj[0].question.point
+
+    if(mainObj[0].name.name !== $('#sname').val()){
+        alert("404 name not available.")
+        $("#tResult").hide()
+        location.reload()
+        return false;
+
+    }$("#tResult").show()
         for(i = 0;i < mainObj.length; i++){
             
             if((mainObj[i].question.quetype == "Easy" && mainObj[i].name.name == $('#sname').val())){

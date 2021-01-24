@@ -70,12 +70,17 @@ class StudSerializer(serializers.ModelSerializer):
 
 
 class ExaminPointSerializer(serializers.ModelSerializer):
+    
+    question = QuestionSerializer(read_only=False)
+    name = StudSerializer(read_only=False)
+
     class Meta:
-        model = ExaminPoint
+        model = ExaminPointt
+        
         fields = '__all__'
 
     def get(self, *obj):
-        queryset = ExaminPoint.objects.all()
+        queryset = ExaminPointt.objects.all()
         std = ExaminPointSerializer(queryset, many=True, context=self.context).data
         return Question
 
@@ -85,5 +90,14 @@ class ExaminPointSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
+
+        instance.name = validated_data.get('name',instance.name)
+        instance.question = validated_data.get('question',instance.question)
+        instance.givenpoint = validated_data.get('givenpoint',instance.givenpoint)
+
+        ExaminPointt.objects.create(**validated_data)
+
+        instance.save()
+
         print(validated_data)
-        return ExaminPoint.objects.create(**validated_data)
+        return ExaminPointt.objects.create(**validated_data)

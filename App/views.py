@@ -41,7 +41,7 @@ from django.urls import reverse_lazy
 
 class ExaminPointViewSet(viewsets.ModelViewSet):
 
-    queryset = ExaminPoint.objects.all()
+    queryset = ExaminPointt.objects.all()
     serializer_class = ExaminPointSerializer
 
     pagination_class = LargeResultsSetPagination
@@ -66,29 +66,44 @@ class ExaminPointViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         response = super(ExaminPointViewSet, self).list(request, *args, **kwargs)
-        user_obj = ExaminPoint.objects.all()
+        user_obj = ExaminPointt.objects.all()
         if request.accepted_renderer.format == 'html':
             return Response({'data': response.data, 'user_obj':user_obj})
         return response
 
-    def post(self, request, format=None, *args, **kwargs):
+    def post(self, request):
 
-        if request.method == 'POST':
-            import pdb;pdb.set_trace()
-            serializer = ExaminPointSerializer(name_obj, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                print(serializer.errors)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        dataset = ExaminPointt.objects.create(name = Stud.objects.filter(name=request.POST.get('name'))[0],
+                        question = Question.objects.filter(question=request.POST.get('question'))[0],
+                        givenpoint = request.POST.get('givenpoint'),
+                        )
+
+        return JsonResponse({"message": "Good"})
+        # return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    # def post(self, request, format=None, *args, **kwargs):
+
+    #     # try:
+    #     #     question = Question.objects.get(question=question)
+    #     # except Question.DoesNotExist:
+    #     #     return Response(status=status.HTTP_404_NOT_FOUND)
+
+    #     if request.method == 'POST':
+    #         import pdb;pdb.set_trace()
+    #         serializer = self.get_serializer(data=request.data)
+    #         if serializer.is_valid():
+    #             serializer.save()
+    #         else:
+    #             print(serializer.errors)
+    #             return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
     def delete(self, request, pk, format=None, *args, **kwargs):
         que_obj = self.get_object(pk)
         que_obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 
 
 @api_view(["POST", "GET"])
@@ -126,9 +141,17 @@ def question_put(request, pk, format=None, *args, **kwargs):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+class DisplayResult(TemplateView):
+    template_name = "results.html"
+
+    queryset = Stud.objects.all().values()
+    serializer_class = StudSerializer
+
 class DisplayStudents(TemplateView):
     template_name = "test_view.html"
-    import pdb
+
     queryset = Stud.objects.all().values()
     serializer_class = StudSerializer
 

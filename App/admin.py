@@ -6,4 +6,4 @@ from django.conf import settings
 # admin.site.register(User)
 admin.site.register(Stud)
 admin.site.register(Question)
-admin.site.register(ExaminPoint)
+admin.site.register(ExaminPointt)
