@@ -44,13 +44,13 @@
                                 <tr data-iddd = "iddd" id="e_result" data-e_point = "val">
                                     <td id="Easy">Easy <br> each has 2 points</td>
                                     <td id = "e_point" data-e_point = "point" ty = "ty" class="text-center"></td>
-                                    <td id = "o_point" class="text-center"></td>
+                                    <td id = "o_point" data-jpoint = "point" ty = "ty" class="text-center"></td>
                                     <td class="text-right"></td>
                                 </tr>
                                 <tr>
                                     <td id="Medium">Medium <br> each has 3 points</td>
                                     <td id = "m_point" data-m_point = "point" class="text-center"></td>
-                                    <td class="text-center"></td>
+                                    <td id = "jm_point" data-jmpoint = "point" class="text-center"></td>
                                     <td class="text-right"></td>
                                 </tr>
                                 <tr >
@@ -70,13 +70,13 @@
                                     <td class="emptyrow"></td>
                                     <td class="emptyrow" id="ad_dition"></td>
                                     <td class="emptyrow text-center"><strong>Avg Points</strong></td>
-                                    <td class="emptyrow text-right">20</td>
+                                    <td class="emptyrow text-right">N/A</td>
                                 </tr>
                                 <tr>
                                     <td class="emptyrow"><i class="fa fa-barcode iconbig"></i></td>
                                     <td class="emptyrow"></td>
                                     <td class="emptyrow text-center"><strong>Total</strong></td>
-                                    <td class="emptyrow text-right">978.00</td>
+                                    <td class="emptyrow text-right">N/A</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -430,17 +430,46 @@ function examinpoint(data){
     }$("#tResult").show()
         for(i = 0;i < mainObj.length; i++){
             
+            
+
+
             if((mainObj[i].question.quetype == "Easy" && mainObj[i].name.name == $('#sname').val())){
 
-                $('#tResult tbody #e_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +"  data-epoint = "+ mainObj[i].question.point +" >\
-                <td data-givenpoint = "+ mainObj[i].givenpoint +">"+ mainObj[i].givenpoint +"</td>\
-                </tr>")
+               
+                if(mainObj[i].question.subj == "Python"){
+
+                    $('#tResult tbody #e_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +"  data-epoint = "+ mainObj[i].question.point +" >\
+                    <td data-givenpoint = "+ mainObj[i].givenpoint +">"+ mainObj[i].givenpoint +"</td>\
+                    </tr>")
+                }
+
+                if(mainObj[i].question.subj == "JQuery"){
+
+                    $('#tResult tbody #o_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +"  data-jpoint = "+ mainObj[i].question.point +" >\
+                    <td data-givenpoint = "+ mainObj[i].givenpoint +">"+ mainObj[i].givenpoint +"</td>\
+                    </tr>")
+                }
+
             }
+
 
             if((mainObj[i].question.quetype == "Medium" && mainObj[i].name.name == $('#sname').val())){
+               
+            
+                if(mainObj[i].question.subj == "Python"){
 
-                $('#tResult tbody #m_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +" data-mpoint = "+ mainObj[i].question.point +"> <td data-givenpoint = "+ mainObj[i].givenpoint +"> "+ mainObj[i].givenpoint +"</td></tr>")
-            }
+                    $('#tResult tbody #m_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +" data-mpoint = "+ mainObj[i].question.point +"> <td data-givenpoint = "+ mainObj[i].givenpoint +"> "+ mainObj[i].givenpoint +"</td></tr>")
+                    }
+
+                if(mainObj[i].question.subj == "JQuery"){
+
+
+                    $('#tResult tbody #jm_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +" data-jmpoint = "+ mainObj[i].question.point +"> <td data-givenpoint = "+ mainObj[i].givenpoint +"> "+ mainObj[i].givenpoint +"</td></tr>")
+                    }
+
+                }
+
+
 
             if((mainObj[i].question.quetype == "Hard" && mainObj[i].name.name == $('#sname').val())){
 
@@ -478,6 +507,71 @@ function examinpoint(data){
 
         $('#tResult tbody #e_point').append("<tr> <td>= "+ sum +" </td> <td> out of "+ sum1 +" </td></tr>")
 
+
+/**/
+
+        var ioio = $('#tResult tbody #o_point tr')
+
+        var qww = []
+
+        for(h=0; h< ioio.length; h++) {
+
+               qww.push(ioio[h].dataset.givenpoint)
+        }
+        var sum = 0;
+        for(var i=0; i < qww.length; i++){
+            sum += parseFloat(qww[i]);
+        }
+
+        var epointt = []
+
+        for(u=0; u< ioio.length; u++) {
+
+               epointt.push(ioio[u].dataset.jpoint)
+        }
+        var sum1 = 0;
+        for(var i=0; i < ioio.length; i++){
+            sum1 += parseFloat(epointt[i]);
+
+        }
+
+        $('#tResult tbody #o_point').append("<tr> <td>= "+ sum +" </td> <td> out of "+ sum1 +" </td></tr>")
+
+
+/**/
+
+
+/**/
+
+        var ioio = $('#tResult tbody #jm_point tr')
+
+        var qww = []
+
+        for(h=0; h< ioio.length; h++) {
+
+               qww.push(ioio[h].dataset.givenpoint)
+        }
+        var sum = 0;
+        for(var i=0; i < qww.length; i++){
+            sum += parseFloat(qww[i]);
+        }
+
+        var epointt = []
+
+        for(u=0; u< ioio.length; u++) {
+
+               epointt.push(ioio[u].dataset.jmpoint)
+        }
+        var sum1 = 0;
+        for(var i=0; i < ioio.length; i++){
+            sum1 += parseFloat(epointt[i]);
+
+        }
+
+        $('#tResult tbody #jm_point').append("<tr> <td>= "+ sum +" </td> <td> out of "+ sum1 +" </td></tr>")
+
+
+/**/
 
 /*To calculating medium question type */
 

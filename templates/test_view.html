@@ -66,8 +66,9 @@
                             <thead>
                                 <tr data-name = "name" data-subj = "subj">
                                     <td><strong id = "stuname" data-name = "name"></strong></td>
-                                    <td class="text-center" data-subj = "subj"><strong id="pythonid" data-subj = "subj"></strong></td>
-                                    <td class="text-center"><strong>Python</strong></td>
+                                    <td class="text-center" data-subj = "subj"><strong id="pythonid" data-subj = "subj">
+                                    Python
+                                    </strong></td>
                                     <td class="text-center"><strong>JQuery</strong></td>
                                     <td class="text-right"><strong>HTML</strong></td>
                                 </tr>
@@ -76,26 +77,26 @@
                                 <tr data-iddd = "iddd" id="e_result" data-e_point = "val">
                                     <td id="Easy">Easy <br> each has 2 points</td>
                                     <td id = "e_point" data-e_point = "point" ty = "ty" class="text-center"></td>
-                                    <td id = "o_point" class="text-center"></td>
+                                    <td id = "j_point" data-jq_point = "point" ty = "ty" class="text-center"></td>
                                     <td class="text-right"></td>
                                 </tr>
                                 <tr>
                                     <td id="Medium">Medium <br> each has 3 points</td>
                                     <td id = "m_point" data-m_point = "point" class="text-center"></td>
-                                    <td class="text-center"></td>
+                                    <td id = "jm_point" data-jm_point = "point" class="text-center"></td>
                                     <td class="text-right"></td>
                                 </tr>
                                 <tr >
                                     <td id="Hard">Hard <br> each has 5 points</td>
                                     <td id = "h_point" data-h_point = "point" class="text-center"></td>
-                                    <td class="text-center"></td>
+                                    <td id = "jh_point" data-jh_point = "point" class="text-center"></td>
                                     <td class="text-right"></td>
                                 </tr>
                                 <br>
                                 <tr>
                                     <td class="highrow"> <strong>Subtotal</strong></td>
                                     <td id = "a_total" data-a_total = "a_total" class="highrow"></td>
-                                    <td class="highrow text-center"></td>
+                                    <td id = "ja_total" data-ja_total = "ja_total" class="highrow text-center"></td>
                                     <td class="highrow text-right"></td>
                                 </tr>
                                 <tr>
@@ -151,8 +152,10 @@ function getStudent(data){
 
 $('#subj').on('change', function() {
   var subj = this.value;
+
   $("#qTable").show();
   $("#rrrr").show();
+
   /*alert(subj);*/
   var subj1 = $('#tResult thead #pythonid').append("<tr data-subj = "+ subj +"> <td data-subj = "+ subj +">  "+ subj +" </td> </tr>")
 
@@ -165,6 +168,7 @@ if(subj=="Python"){
         /*$("#point_input").val().disable*/
 
         if(newpage != "None") {
+
             $.ajax({
                 url: '/python_view/' + newpage,
                 datatype: 'json',
@@ -211,7 +215,7 @@ if(subj=="Python"){
                 }
 }
 
-    
+if($('#tResult thead #pythonid')[0].children[0].dataset.subj =='Python'){
 
     $(document).ready(function() {
 
@@ -225,7 +229,7 @@ if(subj=="Python"){
             }
         });
     });
-
+}
     function tableFromResponse(data) {
 
         var mainObj = data.results
@@ -560,6 +564,442 @@ function generatereport(){
         $('#tResult tbody #h_point').append("<tr> <td>= "+ h_sum +" </td> <td>out of "+ sum_h +" </td></tr>")
 
 }
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++ FOR JQUERY +++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+
+$('#subj').on('change', function() {
+  var subj = this.value;
+
+  $("#qTable").show();
+  $("#rrrr").show();
+
+  /*alert(subj);*/
+  var subj1 = $('#tResult thead #pythonid').append("<tr data-subj = "+ subj +"> <td data-subj = "+ subj +">  "+ subj +" </td> </tr>")
+
+if(subj=="JQuery"){
+
+        $( "#qTable" ).scroll(function() {
+        var newpage = $("#qTable tbody").attr("data-page");
+        console.log("scroll called successfully")
+
+        /*$("#point_input").val().disable*/
+
+        if(newpage != "None") {
+
+            $.ajax({
+                url: '/jquery_view/' + newpage,
+                datatype: 'json',
+                type: 'GET',
+                success: function (data) {
+                    /*alert("Got data!")*/
+                    report(data);
+                }
+            });
+            }
+        });
+
+    function report(data){
+
+        var mainObj = data.results
+        var nextpage = data.next
+
+        if(nextpage == null){
+            var pagenum  = "None"
+        }
+        else{
+
+            var pagenum = nextpage.split("/")[4]
+        }
+
+        var iddd = mainObj[0].id
+
+        $("#qTable tbody").attr("data-page", pagenum);
+        $("#qTable tbody").attr("data-id", iddd);
+
+
+        for(i = 0;i < mainObj.length; i++){
+          $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+                    <td id = 'clickme'></td>\
+                    <td id = >"+ mainObj[i].id +"</td>\
+                    <td id = >"+ mainObj[i].question +"</td>\
+                    <td id = >"+ mainObj[i].answer +"</td>\
+                    <td id = >"+ mainObj[i].subj +"</td>\
+                    <td id = >"+ mainObj[i].point +"</td>\
+                    <td id = >"+ mainObj[i].quetype +"</td>\
+                    <td id = 'point_input_"+ mainObj[i].id +"' >"+  '<input id = "point_input" onchange="updateInput.call(this)" hu='+ mainObj[i].quetype +' hu_points='+ mainObj[i].point +'  class = "btn btn-secondary" type="number"></input>' +"</td>\
+                    </tr>" 
+                    );
+                }
+}
+
+if($('#tResult thead #pythonid')[0].children[0].dataset.subj =='JQuery'){
+
+    $(document).ready(function() {
+
+        $.ajax({
+            url: '/jquery_view/',
+            datatype: 'json',
+            type: 'GET',
+            success: function (data) {
+                /*alert("Got data!")*/
+                tableFromResponse(data);
+            }
+        });
+    });
+}
+    function tableFromResponse(data) {
+
+        var mainObj = data.results
+        var nextpage = data.next
+
+        if (nextpage == null){
+            var pagenum  = "None"
+        }
+        else{
+
+            var pagenum = nextpage.split("/")[4]
+        }
+        $("#qTable tbody").attr("data-page", pagenum);
+
+
+        var iddd = mainObj[0].id
+
+        $("#qTable tbody").attr("data-page", pagenum);
+        $("#qTable tbody").attr("data-id", iddd);
+
+        console.log("allright lets do this")
+
+                for(i = 0;i < mainObj.length; i++){
+
+                  $( "#qTable tbody" ).append( "<tr id = 'trid_"+ mainObj[i].id +"' data-question = '"+ mainObj[i].question + "' data-answer = '"+ mainObj[i].answer + "' data-subj = '"+ mainObj[i].subj + "' data-point = '"+ mainObj[i].point + "' data-quetype = '"+ mainObj[i].quetype + "'>\
+                            <td id = 'clickme'></td>\
+                            <td id = >"+ mainObj[i].id +"</td>\
+                            <td id = >"+ mainObj[i].question +"</td>\
+                            <td id = >"+ mainObj[i].answer +"</td>\
+                            <td id = >"+ mainObj[i].subj +"</td>\
+                            <td id = >"+ mainObj[i].point +"</td>\
+                            <td id = >"+ mainObj[i].quetype +"</td>\
+                            <td id = 'point_input_"+ mainObj[i].id + "' data-id= "+ mainObj[i].id +">"+  '<input id = "point_input" onchange="updateInput.call(this)" hu='+ mainObj[i].quetype +' hu_points='+ mainObj[i].point +' class = "btn btn-secondary" type="number" myid = '+ mainObj[i].id +' disabled ></input>' +"</td>\
+                            </tr>" 
+                            );
+                        }
+            }
+      }
+
+});
+
+    function updateInput(val) {
+
+        
+        var val =$(this).val()
+
+
+        var quetype = $(this).attr('hu');
+        var  hu_points = $(this).attr('hu_points');
+
+
+        var e_counter = $('#tResult tbody #je_point').find('tr').length+1
+        var m_counter = $('#tResult tbody #jm_point').find('tr').length+1
+        var h_counter = $('#tResult tbody #jh_point').find('tr').length+1
+
+
+        var allpoints = $('#tResult tbody #je_point').attr("data-allpoints", val)
+
+        $('#tResult tbody #je_point').find("tr")
+        var number = $('#tResult tbody #je_point').html()
+
+
+        var e_ary = [];
+        console.log(e_ary);
+            if((quetype == "Easy") && (val==hu_points || val<hu_points) ){
+            
+                $('#tResult tbody #je_point').append("<tr data-iddd = je_count_"+ e_counter +" data-je_point = '" + val + "'><td class='attrName'> "+ e_counter +"). "+ val + " points </td>\
+                     </tr>")
+
+                var name = $(this).parent().parent()[0].dataset.name
+
+                var question = $(this).parent().parent()[0].dataset.question
+                var answer = $(this).parent().parent()[0].dataset.answer
+                var quetype = $(this).parent().parent()[0].dataset.quetype
+                var point = $(this).parent().parent()[0].dataset.point
+                var subj = $(this).parent().parent()[0].dataset.subj
+
+                var val =$(this).val()
+                var qid = $(this).attr("myid")
+                var sname = $('#sname').val()
+
+
+                e_ary.push({name: sname, givenpoint: val, question: question, point:point});
+
+                alert(JSON.stringify(e_ary));
+
+                $.ajax({
+                  type: 'POST',
+                  url: '/examinpoint/',
+                  dataType:'json',
+                  data: {name: sname, givenpoint: val, question: question, point:point},
+                  success: function(data, textStatus, jqXHR) {
+                    alert("success");
+                    $("#qTable tbody #point_input" ).hide()
+                  }
+                });
+            }
+
+            if((quetype == "Medium") && (val==hu_points || val<hu_points))
+            {
+                $('#tResult tbody #jm_point').append("<tr data-iddd = jm_count_"+ m_counter +" data-jm_point = '" + val + "'><td class='attrName'> "+ m_counter +"). "+ val + " points </td>\
+                    </tr>")
+
+
+
+                var name = $(this).parent().parent()[0].dataset.name
+
+                var question = $(this).parent().parent()[0].dataset.question
+                var answer = $(this).parent().parent()[0].dataset.answer
+                var quetype = $(this).parent().parent()[0].dataset.quetype
+                var point = $(this).parent().parent()[0].dataset.point
+                var subj = $(this).parent().parent()[0].dataset.subj
+
+                var val =$(this).val()
+                var qid = $(this).attr("myid")
+                var sname = $('#sname').val()
+
+
+                e_ary.push({name: sname, givenpoint: val, question: question, point:point});
+
+                alert(JSON.stringify(e_ary));
+
+                $.ajax({
+                  type: 'POST',
+                  url: '/examinpoint/',
+                  dataType:'json',
+                  data: {name: sname, givenpoint: val, question: question, point:point},
+                  success: function(data, textStatus, jqXHR) {
+                    alert("success");
+                  }
+                });
+
+            }
+            if((quetype == "Hard") && (val==hu_points || val<hu_points))
+            {
+
+                $('#tResult tbody #jh_point').append("<tr data-iddd = jh_count_"+ h_counter +" data-jh_point = '" + val + "'><td class='attrName'> "+ h_counter +"). "+ val + " points </td>\
+                     </tr>")
+
+
+                var name = $(this).parent().parent()[0].dataset.name
+
+                var question = $(this).parent().parent()[0].dataset.question
+                var answer = $(this).parent().parent()[0].dataset.answer
+                var quetype = $(this).parent().parent()[0].dataset.quetype
+                var point = $(this).parent().parent()[0].dataset.point
+                var subj = $(this).parent().parent()[0].dataset.subj
+
+                var val =$(this).val()
+                var qid = $(this).attr("myid")
+                var sname = $('#sname').val()
+
+
+                e_ary.push({name: sname, givenpoint: val, question: question, point:point});
+
+                alert(JSON.stringify(e_ary));
+
+                $.ajax({
+                  type: 'POST',
+                  url: '/examinpoint/',
+                  dataType:'json',
+                  data: {name: sname, givenpoint: val, question: question, point:point},
+                  success: function(data, textStatus, jqXHR) {
+                    alert("success");
+                  }
+                });
+
+            }
+    }
+
+
+function starttest(){
+
+      var count = 30;
+        var interval = setInterval(function(){
+          document.getElementById('r').innerHTML=count;
+          count--;
+          if (count === 0){
+            clearInterval(interval);
+            document.getElementById('r').innerHTML='Done';
+            // or...
+            alert("You're out of time!");
+            $("#qTable tbody #point_input" ).prop('disabled', true);
+            $("#testresultButton").show();
+          }
+        }, 1000);
+
+
+        $("#qTable tbody #point_input" ).prop('disabled', false);
+
+        var namereset = $('#tResult thead #stuname').children()[0].dataset.name
+        var subj = $('#tResult thead #pythonid').children()[0].dataset.subj
+        var points = $("#point_input").val()
+
+        $( "#qTable tbody #point_input_"+ mainObj[0].id +"").children("#point_input").val()
+
+        var e_point = parseInt($('#tResult tbody #je_point').children()[0].dataset.e_point)
+        var m_point = parseInt($('#tResult tbody #jm_point').children()[0].dataset.m_point)
+        var h_point = parseInt($('#tResult tbody #jh_point').children()[0].dataset.h_point)
+
+}
+
+function generatereport(){
+
+        $.ajax({
+            url: '/examinpoint/',
+            datatype: 'json',
+            type: 'GET',
+            success: function (data) {
+                /*alert("Got data!")*/
+                examinpoint(data);
+            }
+        });
+}
+
+
+    function examinpoint(data){
+
+        var mainObj = data.results
+        var nextpage = data.next
+
+        name = mainObj[0].name.name
+        point = mainObj[0].question.point
+/*        alert($('#sname').val())
+        alert($('#tResult thead #pythonid')[0].children[0].dataset.subj)*/
+
+        for(i = 0;i < mainObj.length; i++){
+            
+            if((mainObj[i].question.quetype == "Easy" && mainObj[i].name.name == $('#sname').val())){
+
+                $('#tResult tbody #je_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +"  data-epoint = "+ mainObj[i].question.point +" >\
+                <td data-givenpoint = "+ mainObj[i].givenpoint +">"+ mainObj[i].givenpoint +"</td>\
+                </tr>")
+            }
+
+            if((mainObj[i].question.quetype == "Medium" && mainObj[i].name.name == $('#sname').val())){
+
+                $('#tResult tbody #jm_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +" data-mpoint = "+ mainObj[i].question.point +"> <td data-givenpoint = "+ mainObj[i].givenpoint +"> "+ mainObj[i].givenpoint +"</td></tr>")
+            }
+
+            if((mainObj[i].question.quetype == "Hard" && mainObj[i].name.name == $('#sname').val())){
+
+                $('#tResult tbody #jh_point').append("<tr data-givenpoint = "+ mainObj[i].givenpoint +" data-hpoint = "+ mainObj[i].question.point +"> <td data-givenpoint = "+ mainObj[i].givenpoint +"> "+ mainObj[i].givenpoint +"</td></tr>")
+            }
+
+        }
+
+/*To calculating easy question type */
+
+        var ioio = $('#tResult tbody #je_point tr')
+
+        var qww = []
+
+        for(h=0; h< ioio.length; h++) {
+
+               qww.push(ioio[h].dataset.givenpoint)
+        }
+        var sum = 0;
+        for(var i=0; i < qww.length; i++){
+            sum += parseFloat(qww[i]);
+        }
+
+        var epointt = []
+
+        for(u=0; u< ioio.length; u++) {
+
+               epointt.push(ioio[u].dataset.epoint)
+        }
+        var sum1 = 0;
+        for(var i=0; i < ioio.length; i++){
+            sum1 += parseFloat(epointt[i]);
+
+        }
+
+        $('#tResult tbody #je_point').append("<tr> <td>= "+ sum +" </td> <td> out of "+ sum1 +" </td></tr>")
+
+
+/*To calculating medium question type */
+
+        var m_ioio = $('#tResult tbody #jm_point tr')
+        var m_qww = []
+
+        for(h=0; h< m_ioio.length; h++) {
+
+               m_qww.push(m_ioio[h].dataset.givenpoint)
+        }
+        var m_sum = 0;
+        for(var i=0; i < m_qww.length; i++){
+            m_sum += parseFloat(m_qww[i]);
+        }
+
+
+        var mpointt = []
+
+        for(u=0; u< m_ioio.length; u++) {
+
+               mpointt.push(m_ioio[u].dataset.mpoint)
+        }
+        var sum_m = 0;
+        for(var i=0; i < m_ioio.length; i++){
+            sum_m += parseFloat(mpointt[i]);
+
+        }
+    
+        $('#tResult tbody #m_point').append("<tr> <td>= "+ m_sum +" </td> <td>out of "+ sum_m +" </td></tr>")
+
+/*To calculating hard question type */
+
+        var h_ioio = $('#tResult tbody #h_point tr')
+        var h_qww = []
+
+        for(h=0; h< h_ioio.length; h++) {
+
+               h_qww.push(h_ioio[h].dataset.givenpoint)
+        }
+        var h_sum = 0;
+        for(var i=0; i < h_qww.length; i++){
+            h_sum += parseFloat(h_qww[i]);
+        }
+        
+        var hpointt = []
+
+        for(u=0; u< h_ioio.length; u++) {
+
+               hpointt.push(h_ioio[u].dataset.hpoint)
+        }
+        var sum_h = 0;
+        for(var i=0; i < h_ioio.length; i++){
+            sum_h += parseFloat(hpointt[i]);
+        }
+
+        $('#tResult tbody #h_point').append("<tr> <td>= "+ h_sum +" </td> <td>out of "+ sum_h +" </td></tr>")
+
+}
+
+
+
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 </script>
 
