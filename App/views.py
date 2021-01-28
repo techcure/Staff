@@ -1,12 +1,15 @@
+from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from .models import *
 from .pagination import *
+from django.conf import settings
 
 from django.shortcuts import get_object_or_404
 from django.http import Http404
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.renderers import TemplateHTMLRenderer
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import api_view
@@ -17,27 +20,25 @@ from rest_framework import permissions
 
 from rest_framework import viewsets
 from rest_framework import status
+from rest_framework import generics
 import json
 
 from django.http import HttpResponse
-from django.shortcuts import render
-from django.conf import settings
+from django.http import JsonResponse
 
+from django.urls import reverse_lazy
 from django.shortcuts import redirect, render
+
+from django.views import View
 from django.views.generic import TemplateView
 from django.views.generic import CreateView
-from django.http import JsonResponse
-from django.views import View
+from django.views.generic.list import ListView
+from django.views.generic.edit import UpdateView
+
 from App.serializers import (UserSerializer, 
     GroupSerializer, QuestionSerializer, StudSerializer, ExaminPointSerializer,
     # StaffSignUpForm, StudentSignUpForm
     )
-
-from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView
-from rest_framework import generics
-from django.urls import reverse_lazy
-
 
 class ExaminPointViewSet(viewsets.ModelViewSet):
 
@@ -73,32 +74,15 @@ class ExaminPointViewSet(viewsets.ModelViewSet):
 
     def post(self, request):
 
-        dataset = ExaminPointt.objects.create(name = Stud.objects.filter(name=request.POST.get('name'))[0],
-                        question = Question.objects.filter(question=request.POST.get('question'))[0],
-                        givenpoint = request.POST.get('givenpoint'),
-                        )
+        dataset = ExaminPointt.objects.create(
+            name = Stud.objects.filter(name=request.POST.get('name'))[0],
+            question = Question.objects.filter(question=request.POST.get('question'))[0],
+            givenpoint = request.POST.get('givenpoint'),
+            )
 
         return JsonResponse({"message": "Good"})
-        # return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-    # def post(self, request, format=None, *args, **kwargs):
-
-    #     # try:
-    #     #     question = Question.objects.get(question=question)
-    #     # except Question.DoesNotExist:
-    #     #     return Response(status=status.HTTP_404_NOT_FOUND)
-
-    #     if request.method == 'POST':
-    #         import pdb;pdb.set_trace()
-    #         serializer = self.get_serializer(data=request.data)
-    #         if serializer.is_valid():
-    #             serializer.save()
-    #         else:
-    #             print(serializer.errors)
-    #             return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
     def delete(self, request, pk, format=None, *args, **kwargs):
         que_obj = self.get_object(pk)
@@ -139,8 +123,6 @@ def question_put(request, pk, format=None, *args, **kwargs):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 class DisplayResult(TemplateView):

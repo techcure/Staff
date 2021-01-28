@@ -40,7 +40,7 @@ class ExaminPointt(models.Model):
     name = models.ForeignKey(Stud, on_delete=models.CASCADE, blank=True,null=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=True,null=True)
     givenpoint = models.CharField(max_length=200, null = True, blank = True)
-
+    
     class Meta:
         unique_together = ['name', 'question']
         ordering = ['name']
