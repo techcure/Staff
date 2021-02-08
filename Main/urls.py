@@ -17,7 +17,6 @@ router.register(r'Student', views.StudViewSet)
 
 app_name = 'App'
 
-
 urlpatterns = [
     # path('accounts/', include('django.contrib.auth.urls')),
     # path('accounts/signup/', SignUpView.as_view(), name='signup'),
@@ -28,6 +27,7 @@ urlpatterns = [
     path('home1/', Home1, name='home1'),
     path('', include(router.urls)),
     url(r'^',include('App.urls',namespace='App')),
+    url(r'^',include('App2.urls')),
     path('ques-view/', QuestionList.as_view()),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

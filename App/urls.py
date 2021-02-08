@@ -6,6 +6,8 @@ from .views import *
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from django.conf.urls import url
+from django.conf import settings
+
 app_name = 'App'
 
 urlpatterns = [
@@ -23,6 +25,11 @@ urlpatterns = [
     path('<pk>/update_question', UpdateQuestion.as_view()),
 
     path('display-python/', DisplayPython.as_view(), name='display-python'),
+
+
+    path('create-user/', DisplayUser.as_view(), name='create-user'),
+
+    
     path('display-jquery/', DisplayJquery.as_view(), name='display-jquery'),
     path('display-html/', DisplayHTML.as_view(), name='display-html'),
     path('question_op/<int:pk>/', question_op, name='question_op'),

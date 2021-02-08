@@ -12,7 +12,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <!-- Custom files -->
-        <link rel="shortcut icon" href="{%  static 'admin/img/favicon.ico' %}">  
+        <link rel="shortcut icon" href="{%  static 'admin/img/favicon.ico' %}">
         <script src="{% static 'admin/js/staff.js' %}"></script>
         <link rel="stylesheet" href="{% static 'admin/css/staff.css' %}" type="text/css" />
         <!-- End Constum files -->
@@ -43,8 +43,16 @@
 <li><a href="{% url 'App:display-python' %}">Python Questions</a></li>
 <li><a href="{% url 'App:display-jquery' %}">JQuery Questions</a></li>
 <li><a href="{% url 'App:display-html' %}">HTML Questions</a></li>
+<li><a href="{% url 'App:create-user' %}">Add User</a></li>
+
+
+
+
 <li><a href="{% url 'App:take-test' %}">Take Test</a></li>
 <li><a href="{% url 'App:test-results' %}">Results</a></li>
+<li><a href="{% url 'App2:polling-index' %}">Another App</a></li>
+
+
 </ul><br>
 <div class="input-group">
 <input type="text" class="form-control" placeholder="Search Blog..">

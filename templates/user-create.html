@@ -1,4 +1,5 @@
 
+
 <body>
     
 {% extends 'base.html' %}
@@ -7,6 +8,7 @@
 
         <form id="uform" method="POST">
             {% csrf_token %}
+<div class="container">
             <div class="form-group">  
             <input type="text" class="form-control" id="question" placeholder="Enter User Name" name="name">
             </div>
@@ -15,12 +17,25 @@
             <div class="col-sm-2">
             <br>
             <p id="addUButton" style="border:solid black 2px; background: grey" class="btn btn-secondary"> ADD USER</p>
+            <br><br><br><br>
+            <p id="callapiUButton" style="border:solid black 2px; background: grey" class="btn btn-secondary"> Call me</p>
             </div>
+  </div>
         </form>
+
+<div id="drt">
+<p class="output" id="output"></p>
+</div>
 </body>
+
 {% block javascript %}
+
 <script type="text/javascript">
+
 var token = document.getElementsByName("csrfToken").value;
+
+
+
 $('#addUButton').click(function(){
   var NameForm1 = $('#uform');
   $.ajax({
@@ -36,6 +51,32 @@ $('#addUButton').click(function(){
       }
     });
 });
+
+
+$('#callapiUButton').click(function(){
+  
+    var urls = 'http://159.65.226.37:8006/api/v1.0/global/holdings/get-sum/afa0516ba34a4afd973f1fde19926ff3';
+    var token = 'token 464a6030458c11a6562d1535c10ebc65fb8c5859';
+
+        $.ajax({
+              url: urls,
+              datatype: 'json',
+              type: 'GET',
+              headers: {
+                  Authorization: token,
+              },
+              success: function (data) {
+                  alert(data)
+                  report(data);
+                  $("#output").html(data)
+              }
+          });
+});
+
+function report(data){
+    var mo = data.results
+    $("#drt").append("<p> "+ mo +" </p>")
+}
 
 </script>
 
@@ -54,3 +95,4 @@ $('#addUButton').click(function(){
 
 </body>
 </html>
+

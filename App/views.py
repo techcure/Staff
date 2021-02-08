@@ -236,6 +236,15 @@ class DisplayHTML(TemplateView):
     queryset = Question.objects.filter(subj='HTML').values()
     serializer_class = QuestionSerializer
 
+
+class DisplayUser(TemplateView):
+
+    template_name = "user-create.html"
+
+    queryset = Stud.objects.all()
+    serializer_class = StudSerializer
+
+
 class display_python_que(ListView):
     model = Question
 
