@@ -5,6 +5,14 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.urls import reverse
+from rest_framework.authtoken.models import Token
+from django.dispatch import receiver
+
+from django.db.models.signals import post_save
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 class Stud(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True, default=None)

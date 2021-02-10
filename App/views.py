@@ -594,3 +594,19 @@ class QuestionDetail(APIView):
         que_obj = self.get_object(pk)
         que_obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+from django.db.models import Q
+
+@api_view(["POST", "GET"])
+def GetData(request, format=None, *args, **kwargs):
+
+    if request.method == 'POST':
+        serializer = QuestionSerializer(data=request.data)
+
+        name=serializer["question"]
+        values=serializer["answer"]
+        query_to_do = Q()
+        if len(name) == len(values):
+            for i in range(len(name)):
+                query_to_do = query_to_do & Q(output[name[i]]==values[i])

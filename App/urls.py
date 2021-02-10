@@ -36,6 +36,7 @@ urlpatterns = [
     path('question_put/<int:pk>/', question_put, name='question_put'),
     path('take-test/', DisplayStudents.as_view(), name='take-test'),
     path('test-results/', DisplayResult.as_view(), name='test-results'),
+    path('getData/', GetData, name='getData')
     
 ]
 
