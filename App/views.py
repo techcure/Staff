@@ -35,8 +35,10 @@ from django.views.generic import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
 
-from App.serializers import (UserSerializer, 
-    GroupSerializer, QuestionSerializer, StudSerializer, ExaminPointSerializer,
+from App.serializers import (
+    # UserSerializer, 
+    # GroupSerializer, 
+    QuestionSerializer, StudSerializer, ExaminPointSerializer,
     # StaffSignUpForm, StudentSignUpForm
     )
 
@@ -515,16 +517,16 @@ class HTMLViewSet(viewsets.ModelViewSet):
 End HTML Viewset 
 """
 
-class UserViewSet(viewsets.ModelViewSet):
+# class UserViewSet(viewsets.ModelViewSet):
 
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
+#     queryset = User.objects.all().order_by('-date_joined')
+#     serializer_class = UserSerializer
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+# class GroupViewSet(viewsets.ModelViewSet):
 
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+#     queryset = Group.objects.all()
+#     serializer_class = GroupSerializer
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
